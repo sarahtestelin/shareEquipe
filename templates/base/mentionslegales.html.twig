@@ -1,4 +1,104 @@
-{% extends 'base.html.twig' %} {% block title %}{{ parent() }}Mentions légales{% endblock
-%} {% block body %}
-<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Mentions légales</h1>
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}Mentions légales{% endblock %}
+
+{% block body %}
+    <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Mentions légales</h1>
+
+    <div class="container mt-5">
+        <h2>Informations légales</h2>
+        <p>
+            Conformément aux dispositions des articles 6-III et 19 de la Loi n° 2004-575 du 21 juin 2004 pour la Confiance dans l'économie numérique, dite L.C.E.N., nous informons les utilisateurs du site <strong>Share</strong> des mentions légales suivantes :
+        </p>
+
+        <h3>Éditeur du site</h3>
+        <p>
+            Le présent site web est édité par :
+            <br>
+            <strong>Nom de l'entreprise :</strong> Share Inc.
+            <br>
+            <strong>Adresse :</strong> Arras, France
+            <br>
+            <strong>Email :</strong> contact@share.com
+        </p>
+
+        <h3>Hébergeur du site</h3>
+        <p>
+            Le site est hébergé par :
+            <br>
+            <strong>Nom de l'hébergeur :</strong> Nuage pédagogique
+            <br>
+            <strong>Adresse :</strong> Arras, France
+        </p>
+
+        <h3>Responsabilité</h3>
+        <p>
+            L'éditeur s'efforce de fournir sur le site <strong>Share</strong> des informations aussi précises que possible. Toutefois, il ne saurait être tenu responsable des omissions, inexactitudes ou carences dans la mise à jour, qu'elles soient de son fait ou du fait des tiers partenaires qui lui fournissent ces informations.
+        </p>
+
+        <h3>Propriété intellectuelle</h3>
+        <p>
+            Le site et son contenu (textes, images, graphismes, logos, etc.) sont protégés par les droits de propriété intellectuelle en vigueur en France. Toute reproduction, distribution, modification ou publication, même partielle, de ces éléments est strictement interdite sans l'autorisation préalable de Share Inc.
+        </p>
+
+        <h2>Politique de confidentialité (RGPD)</h2>
+        <p>
+            En conformité avec le Règlement Général sur la Protection des Données (RGPD) en vigueur depuis le 25 mai 2018, <strong>Share</strong> s'engage à protéger les données personnelles des utilisateurs de son site.
+        </p>
+
+        <h3>Collecte des données personnelles</h3>
+        <p>
+            Les données personnelles collectées sur le site <strong>Share</strong> sont :
+            <ul>
+                <li>Nom et prénom</li>
+                <li>Adresse email</li>
+                <li>Adresse IP</li>
+                <li>Informations de navigation (cookies)</li>
+            </ul>
+        </p>
+
+        <h3>Finalité de la collecte</h3>
+        <p>
+            Les données collectées servent à :
+            <ul>
+                <li>Améliorer l'expérience utilisateur sur le site</li>
+                <li>Permettre la gestion des comptes utilisateurs et des fichiers partagés</li>
+                <li>Envoyer des communications marketing avec consentement préalable</li>
+            </ul>
+        </p>
+
+        <h3>Protection des données</h3>
+        <p>
+            <strong>Share</strong> met en œuvre des mesures de sécurité techniques et organisationnelles appropriées pour protéger les données personnelles contre toute violation (perte, altération, accès non autorisé).
+        </p>
+
+        <h3>Droits des utilisateurs</h3>
+        <p>
+            Conformément au RGPD, vous disposez des droits suivants concernant vos données personnelles :
+            <ul>
+                <li>Accès, rectification ou suppression de vos données</li>
+                <li>Limitation du traitement</li>
+                <li>Opposition au traitement de vos données</li>
+                <li>Droit à la portabilité des données</li>
+            </ul>
+            Pour exercer ces droits, n'hésitez pas à <a href="{{ path('app_contact') }}">nous contacter</a>.
+        </p>
+
+        <h3>Durée de conservation des données</h3>
+        <p>
+            Vos données sont conservées pour la durée strictement nécessaire aux finalités pour lesquelles elles ont été collectées, conformément aux dispositions légales en vigueur.
+        </p>
+
+        <h3>Cookies</h3>
+        <p>
+            Le site <strong>Share</strong> utilise des cookies pour améliorer l'expérience utilisateur et analyser le trafic. Vous pouvez gérer vos préférences en matière de cookies en modifiant les paramètres de votre navigateur.
+        </p>
+
+        <h3>Modification des mentions légales et de la politique RGPD</h3>
+        <p>
+            L'éditeur du site se réserve le droit de modifier à tout moment les présentes mentions légales et la politique de confidentialité. Nous vous encourageons à consulter régulièrement cette page pour rester informé des éventuelles modifications.
+        </p>
+
+        <p class="mt-4">Pour toute question relative aux mentions légales ou à la politique de confidentialité, veuillez nous contacter à l'adresse suivante : <a href="mailto:contact@share.com">contact@share.com</a>.</p>
+    </div>
 {% endblock %}

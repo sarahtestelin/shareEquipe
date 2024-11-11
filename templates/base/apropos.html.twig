@@ -1,4 +1,46 @@
-{% extends 'base.html.twig' %} {% block title %}{{ parent() }}A propos{% endblock
-%} {% block body %}
-<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">A propos</h1>
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}À propos{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+
+        body {
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
+        .container {
+            padding-bottom: 50px; 
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">À propos</h1>
+
+    <div class="container mt-5">
+        <p class="lead">Bienvenue sur Share, votre plateforme de partage de fichiers simple, rapide et sécurisée.</p>
+
+        <h2 class="mt-4">Pourquoi utiliser Share ?</h2>
+        <ul>
+            <li><strong>Stockage sécurisé :</strong> Vos fichiers sont hébergés de manière sécurisée sur nos serveurs, et seules les personnes à qui vous donnez accès peuvent consulter et télécharger vos documents.</li>
+            <li><strong>Partage facile :</strong> En quelques clics, générez des liens de partage pour diffuser vos fichiers de manière rapide et intuitive. Vous pouvez également définir des paramètres d'accès spécifiques pour protéger vos informations sensibles.</li>
+            <li><strong>Collaboration instantanée :</strong> Partagez des dossiers entiers avec vos équipes et collaborez en temps réel sur vos documents. Organisez vos fichiers dans des répertoires et gérez facilement les permissions de lecture et d’écriture.</li>
+            <li><strong>Accessibilité partout :</strong> Accédez à vos fichiers depuis n'importe quel appareil, à tout moment. Que vous soyez au bureau, à la maison ou en déplacement, Share est accessible sur PC, tablette ou smartphone.</li>
+        </ul>
+
+        <h2 class="mt-4">Nos engagements</h2>
+        <p>Chez Share, nous comprenons l'importance de la confidentialité et de la sécurité des données. C’est pourquoi nous avons mis en place des protocoles de sécurité avancés pour protéger vos informations.</p>
+        <ul>
+            <li><strong>Confidentialité garantie :</strong> Vos fichiers sont privés. Nous ne les analysons pas et ne les partageons jamais avec des tiers.</li>
+            <li><strong>Sécurité des transferts :</strong> Tous vos fichiers sont transmis via des connexions cryptées pour assurer qu’ils ne peuvent être interceptés ou lus par des utilisateurs non autorisés.</li>
+            <li><strong>Simplicité et efficacité :</strong> Notre interface est conçue pour être intuitive, vous permettant d’organiser, de stocker et de retrouver vos fichiers en un clin d’œil.</li>
+        </ul>
+
+        <h2 class="mt-4">Une plateforme en constante évolution</h2>
+        <p>Notre équipe travaille sans relâche pour améliorer Share en fonction des retours de nos utilisateurs et des évolutions technologiques. Nous sommes à l’écoute de vos suggestions pour enrichir notre plateforme avec des fonctionnalités toujours plus performantes.</p>
+
+        <p class="mt-4">Merci de faire confiance à <strong>Share</strong> pour la gestion et le partage de vos fichiers. Pour toute question ou suggestion, n'hésitez pas à <a href="{{ path('app_contact') }}">nous contacter</a>.</p>
+    </div>
 {% endblock %}

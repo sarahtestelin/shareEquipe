@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -28,6 +29,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string The hashed password
+     * @Assert\NotBlank(message="Le mot de passe ne peut pas être vide.")
+     * @Assert\Length(
+     *     min=12,
+     *     minMessage="Le mot de passe doit contenir au moins {{ limit }} caractères."
+     * )
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{12,}$/",
+     *     message="Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule et un chiffre."
+     * )
      */
     #[ORM\Column]
     private ?string $password = null;
@@ -43,6 +53,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(targetEntity: Fichier::class, mappedBy: 'user')]
     private Collection $fichiers;
+
+    private ?string $oldPassword = null;
 
     public function __construct()
     {
@@ -62,42 +74,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -105,18 +102,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): static
     {
+        // Comparer avec l'ancien mot de passe si disponible
+        if ($this->oldPassword && password_verify($password, $this->oldPassword)) {
+            throw new \Exception("Le nouveau mot de passe doit être différent de l'ancien.");
+        }
+
+        $this->oldPassword = $this->password; // Sauvegarder le mot de passe actuel comme ancien mot de passe
         $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getDateEnvoi(): ?\DateTimeInterface
@@ -127,7 +125,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateEnvoi(\DateTimeInterface $dateEnvoi): static
     {
         $this->dateEnvoi = $dateEnvoi;
-
         return $this;
     }
 
@@ -139,7 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
@@ -151,7 +147,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -176,7 +171,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFichier(Fichier $fichier): static
     {
         if ($this->fichiers->removeElement($fichier)) {
-            // set the owning side to null (unless already changed)
             if ($fichier->getUser() === $this) {
                 $fichier->setUser(null);
             }
