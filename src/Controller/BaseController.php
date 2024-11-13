@@ -186,4 +186,22 @@ class BaseController extends AbstractController
             'scategories' => $scategorieRepository->findAll(),
         ]);
     }
+    #[Route('/delete-fichier/{id}', name: 'app_delete_fichier')]
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
+public function deleteFichier(int $id, EntityManagerInterface $em): Response
+{
+    $fichier = $em->getRepository(Fichier::class)->find($id);
+
+    if (!$fichier || $fichier->getUser() !== $this->getUser()) {
+        $this->addFlash('error', 'Fichier non trouvé ou accès non autorisé.');
+        return $this->redirectToRoute('app_profil');
+    }
+
+    $em->remove($fichier);
+    $em->flush();
+
+    $this->addFlash('success', 'Fichier supprimé avec succès.');
+    return $this->redirectToRoute('app_profil');
+}
+
 }

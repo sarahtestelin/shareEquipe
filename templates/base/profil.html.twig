@@ -102,6 +102,12 @@
                                     <td>{{ fichier.dateEnvoi | date("d-m-Y H:i") }}</td> 
                                     <td>
                                         <a href="{{ path('app_telechargement_fichier', { id: fichier.id }) }}" class="btn btn-primary btn-sm">Télécharger</a>
+                                        
+                                        <!-- Formulaire pour suppression -->
+                                        <form action="{{ path('app_delete_fichier', { id: fichier.id }) }}" method="post" style="display:inline;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                        </form>
                                     </td>
                                 </tr>
                             {% endfor %}
