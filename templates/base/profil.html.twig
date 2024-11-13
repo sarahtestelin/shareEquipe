@@ -1,46 +1,114 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}
-	{{ parent() }}
-	- Profil
+    {{ parent() }}
+    Profil
 {% endblock %}
+
 {% block body %}
-	<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Profil</h1>
-	<div class="row justify-content-center">
-		<div class="col-12 col-md-4 bg-white p-4 m-0 text-primary">
-			<div class="table-responsive">
-				<table class="table table-hover">
-					{% if app.user is not null %}
-						<tr>
-							<th scope="col" class="fw-bold text-primary">Email:</th>
-							<td>{{ app.user.email | capitalize }}</td>
-						</tr>
-						<tr>
-							<th scope="col" class="fw-bold text-primary">Prenom :</th>
-							<td>{{ app.user.prenom | capitalize }}</td>
-						</tr>
+    <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Profil</h1>
+    
+    <!-- Affichage des messages flash -->
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-4 bg-white p-4 m-0 text-primary">
+            <!-- Informations utilisateur -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    {% if app.user is not null %}
                         <tr>
-							<th scope="col" class="fw-bold text-primary">Nom :</th>
-							<td>{{ app.user.nom | capitalize }}</td>
-						</tr>
-						<tr>
-							<th scope="col" class="fw-bold text-primary">Date d'inscription:</th>
-							<td>{{ app.user.dateEnvoi | date("d-m-Y à H:i:s") }}</td>
-						</tr>
-						<tr>
-							<th scope="col" class="fw-bold text-primary">Rôle:</th>
-							<td>
-								{% if "ROLE_ADMIN" in app.user.roles %}
-									Administrateur
-								{% elseif "ROLE_MOD" in app.user.roles %}
-									Modérateur
-								{% else %}
-									Utilisateur
-								{% endif %}
-							</td>
-						</tr>
-					{% endif %}
-				</table>
-			</div>
-		</div>
-	</div>
+                            <th scope="col" class="fw-bold text-primary">Prenom :</th>
+                            <td>{{ app.user.prenom | capitalize }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Nom :</th>
+                            <td>{{ app.user.nom | capitalize }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Email:</th>
+                            <td>{{ app.user.email | capitalize }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Date d'inscription:</th>
+                            <td>{{ app.user.dateEnvoi | date("d-m-Y à H:i:s") }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Rôle:</th>
+                            <td>
+                                {% if "ROLE_ADMIN" in app.user.roles %}
+                                    Administrateur
+                                {% elseif "ROLE_MOD" in app.user.roles %}
+                                    Modérateur
+                                {% else %}
+                                    Utilisateur
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Fichiers uploadés :</th>
+                            <td>{{ userFiles | length }}</td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
+            <h2 class="text-center">Ajouter un fichier</h2>
+            {{ form_start(form) }}
+            <div class="table-responsive">
+                <table class="table">
+                    <tr>
+                        <td colspan="2" class="text-primary fw-bold">Sous-catégories</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{ form_widget(form.scategories) }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group mb-3">
+                {{ form_row(form.fichier) }} 
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
+            <h2 class="text-center">Vos fichiers</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Nom du fichier</th>
+                            <th scope="col" class="fw-bold text-primary">Date d'ajout</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if userFiles|length > 0 %}
+                            {% for fichier in userFiles %}
+                                <tr>
+                                    <td>{{ fichier.nomOriginal }}</td> 
+                                    <td>{{ fichier.dateEnvoi | date("d-m-Y H:i") }}</td> 
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center">Aucun fichier n'a encore été déposé.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

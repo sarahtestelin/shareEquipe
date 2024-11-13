@@ -85,9 +85,9 @@
             .footer {
                 background-color: #d3d3d3;
                 color: #343a40;
-                padding: 2px 0; /* Réduction du padding pour réduire la hauteur de la banderole */
+                padding: 2px 0;
                 text-align: center;
-                font-size: 0.8rem; /* Taille de police inchangée */
+                font-size: 0.8rem;
                 margin-top: auto;
             }
             @keyframes fadeIn {
@@ -128,13 +128,24 @@
                 </ul>
                 <div class="d-flex ms-auto">
                     <ul class="navbar-nav list-unstyled">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Authentification</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a>
-                                <a class="dropdown-item" href="{{ path('app_register') }}">S'inscrire</a>
-                            </div>
-                        </li>
+                        {% if app.user %}
+                            <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link" href="{{ path('app_profil') }}">
+                                    <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                                </a>
+                                <a class="nav-link ms-2" href="{{ path('app_logout') }}" title="Se déconnecter">
+                                    <i class="bi bi-x-circle" style="font-size: 1.5rem; color: #dc3545;"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Authentification</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a>
+                                    <a class="dropdown-item" href="{{ path('app_register') }}">S'inscrire</a>
+                                </div>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
