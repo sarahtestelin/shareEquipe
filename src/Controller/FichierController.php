@@ -24,7 +24,8 @@ class FichierController extends AbstractController
 
     #[Route('/ajout-fichier', name: 'app_ajout_fichier')]
     public function ajoutFichier(Request $request, ScategorieRepository $scategorieRepository,
-        EntityManagerInterface $em, SluggerInterface $slugger): Response {
+        EntityManagerInterface $em, SluggerInterface $slugger): Response 
+    {
         $fichier = new Fichier();
         $scategories = $scategorieRepository->findBy([], ['categorie' => 'asc', 'numero' => 'asc']);
 
@@ -83,15 +84,21 @@ class FichierController extends AbstractController
         return $this->render('fichier/liste-fichiers-par-utilisateur.html.twig', ['users' => $users]);
     }
 
-    #[Route('/private-telechargement-fichier/{id}', name: 'app_telechargement_fichier', requirements:
-            ["id" => "\d+"])]
-    public function telechargementFichier(Fichier $fichier)
+    #[Route('/private-telechargement-fichier/{id}', name: 'app_telechargement_fichier', requirements: ["id" => "\d+"])]
+    public function telechargementFichier(Fichier $fichier): Response
     {
         if ($fichier == null) {
-            $this->redirectToRoute('app_liste_fichiers_par_utilisateur');
-        } else {
-            return $this->file($this->getParameter('file_directory') . '/' . $fichier->getNomServeur(),
-                $fichier->getNomOriginal());
+            return $this->redirectToRoute('app_liste_fichiers_par_utilisateur');
         }
+
+        if ($fichier->getUser() !== $this->getUser()) {
+            $this->addFlash('notice', 'Vous n\'êtes pas le propriétaire de ce fichier');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        return $this->file(
+            $this->getParameter('file_directory') . '/' . $fichier->getNomServeur(),
+            $fichier->getNomOriginal()
+        );
     }
 }

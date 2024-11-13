@@ -91,6 +91,7 @@
                         <tr>
                             <th scope="col" class="fw-bold text-primary">Nom du fichier</th>
                             <th scope="col" class="fw-bold text-primary">Date d'ajout</th>
+                            <th scope="col" class="fw-bold text-primary">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,11 +100,14 @@
                                 <tr>
                                     <td>{{ fichier.nomOriginal }}</td> 
                                     <td>{{ fichier.dateEnvoi | date("d-m-Y H:i") }}</td> 
+                                    <td>
+                                        <a href="{{ path('app_telechargement_fichier', { id: fichier.id }) }}" class="btn btn-primary btn-sm">Télécharger</a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="2" class="text-center">Aucun fichier n'a encore été déposé.</td>
+                                <td colspan="3" class="text-center">Aucun fichier n'a encore été déposé.</td>
                             </tr>
                         {% endif %}
                     </tbody>
