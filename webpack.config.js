@@ -21,7 +21,7 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js') // Main app entry
-    .addEntry('captcha', './assets/captcha.js') // Entrée pour le script CAPTCHA
+    .addEntry('captcha', './assets/Captcha.js') // Entrée pour le script CAPTCHA
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

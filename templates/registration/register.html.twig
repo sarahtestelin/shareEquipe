@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-	{{parent()}}
-	Inscription
+	{{ parent() }} - Inscription
 {% endblock %}
 {% block body %}
 	<div class="container-fluid">
@@ -16,10 +15,49 @@
             {{ form_row(registrationForm.nom) }}
 			{{ form_row(registrationForm.plainPassword, {label: 'Password'}) }}
 			{{ form_row(registrationForm.agreeTerms) }}
+
+			<!-- CAPTCHA -->
+			<div class="form-group mt-3">
+				<label for="captchaInput" class="form-label">Recopiez le code ci-dessous :</label>
+				<div id="captcha" class="d-flex align-items-center">
+					<span id="captchaCode" class="p-2 border rounded bg-light fw-bold"></span>
+					<button type="button" id="refreshCaptcha" class="btn btn-link ms-2">↻</button>
+				</div>
+				<input type="hidden" name="captchaValue" id="hiddenCaptchaValue" />
+				<input type="text" name="captchaInput" id="captchaInput" class="form-control mt-2" placeholder="Entrez le code affiché" required />
+			</div>
+
 			<div class="text-center">
-				<button class="btn btn-lg btn-primary mt-2" type="submit">S'inscrire</button>
+				<button class="btn btn-lg btn-primary mt-4" type="submit">S'inscrire</button>
 			</div>
 			{{ form_end(registrationForm) }}
 		</div>
 	</div>
-</div>{% endblock %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const captchaCodeElement = document.getElementById('captchaCode');
+        const hiddenCaptchaValue = document.getElementById('hiddenCaptchaValue');
+        const refreshCaptchaButton = document.getElementById('refreshCaptcha');
+
+        // Génère un CAPTCHA de 4 chiffres aléatoires
+        function generateCaptcha() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        // Rafraîchit le CAPTCHA
+        function refreshCaptcha() {
+            const newCaptcha = generateCaptcha();
+            captchaCodeElement.textContent = newCaptcha;
+            hiddenCaptchaValue.value = newCaptcha;
+        }
+
+        // Initialisation du CAPTCHA
+        refreshCaptcha();
+
+        // Ajout de l'événement au bouton de rafraîchissement
+        refreshCaptchaButton.addEventListener('click', refreshCaptcha);
+    });
+</script>
+{% endblock %}

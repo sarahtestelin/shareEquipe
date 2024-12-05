@@ -1,56 +1,88 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    {{ parent() }}
-    Connectez-vous
+	{{ parent() }}
+	Connectez-vous
 {% endblock %}
 {% block body %}
-    <div class="container-fluid">
-        <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
-            Connectez-vous
-        </h1>
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
-                <form method="post" id="login-form">
-                    {% if error %}
-                        <div class="alert alert-danger">
-                            {{ error.messageKey|trans(error.messageData, 'security') }}
-                        </div>
-                    {% endif %}
+	<div class="container-fluid">
+		<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
+			Connectez-vous
+		</h1>
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
+				<form method="post" id="login-form">
+					{% if error %}
+						<div class="alert alert-danger">
+							{{ error.messageKey|trans(error.messageData, 'security') }}
+						</div>
+					{% endif %}
 
-                    {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+					{% for message in app.flashes('error') %}
+						<div class="alert alert-danger">
+							{{ message }}
+						</div>
+					{% endfor %}
 
-                    {% if app.user %}
-                        <div class="mb-3">
-                            You are logged in as
-                            {{ app.user.userIdentifier }},
-                            <a href="{{ path('app_logout') }}">Logout</a>
-                        </div>
-                    {% endif %}
-                    
-                    <label for="inputEmail">Email</label>
-                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus/>
-                    
-                    <label for="inputPassword">Password</label>
-                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required/>
-                    
-                    <!-- CAPTCHA simple -->
-                    <label for="captchaInput">CAPTCHA : <span class="fw-bold">{{ captcha_code }}</span></label>
-                    <input type="text" name="captcha" id="captchaInput" class="form-control mt-2" required placeholder="Entrez le code affiché"/>
-                    <!-- Fin CAPTCHA -->
-                    
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
-                    
-                    <div class="text-center">
-                        <button class="btn btn-lg btn-primary mt-2" type="submit">
-                            Se connecter
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+					{% if app.user %}
+						<div class="mb-3">
+							You are logged in as
+							{{ app.user.userIdentifier }},
+							<a href="{{ path('app_logout') }}">Logout</a>
+						</div>
+					{% endif %}
+
+					<label for="inputEmail">Email</label>
+					<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus/>
+
+					<label for="inputPassword">Password</label>
+					<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required/>
+
+					<!-- CAPTCHA -->
+					<div class="mb-3">
+						<label for="captchaInput" class="form-label">Recopiez le code :</label>
+						<div id="captcha" class="d-flex align-items-center">
+							<span id="captchaCode" class="p-2 border rounded bg-light fw-bold"></span>
+							<button type="button" id="refreshCaptcha" class="btn btn-link ms-2">↻</button>
+						</div>
+						<input type="hidden" name="captchaValue" id="hiddenCaptchaValue"/>
+						<input type="text" name="captchaInput" id="captchaInput" class="form-control mt-2" placeholder="Entrez le code affiché" required/>
+					</div>
+
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+
+					<div class="text-center">
+						<button class="btn btn-lg btn-primary mt-2" type="submit">
+							Se connecter
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const captchaCodeElement = document.getElementById('captchaCode');
+			const hiddenCaptchaValue = document.getElementById('hiddenCaptchaValue');
+			const refreshCaptchaButton = document.getElementById('refreshCaptcha');
+
+			// Génère un CAPTCHA de 4 chiffres aléatoires
+			function generateCaptcha() {
+				return Math.floor(1000 + Math.random() * 9000).toString();
+			}
+
+			// Rafraîchit le CAPTCHA
+			function refreshCaptcha() {
+				const newCaptcha = generateCaptcha();
+				captchaCodeElement.textContent = newCaptcha;
+				hiddenCaptchaValue.value = newCaptcha;
+			}
+
+			// Initialisation du CAPTCHA
+			refreshCaptcha();
+
+			// Ajout de l'événement au bouton de rafraîchissement
+			refreshCaptchaButton.addEventListener('click', refreshCaptcha);
+		});
+	</script>
 {% endblock %}
