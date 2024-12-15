@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}Les amis{% endblock %}
+
+{% block body %}
+<div style="text-align: center; margin-top: 50px;">
+<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Les amis</h1>
+<form action="" method="post" style="margin: 20px auto; max-width: 500px;">
+            <input 
+                type="email" 
+                name="email" 
+                placeholder="Saisir l'email de la personne que vous souhaitez inviter" 
+                required 
+                style="
+                    width: 100%;
+                    padding: 10px;
+                    margin-bottom: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    text-align: center;
+                "
+            >
+            <button type="submit" style="
+                    background-color: #178CBA;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">
+                DEMANDER
+            </button>
+        </form>
+    </div>
+{% endblock %}

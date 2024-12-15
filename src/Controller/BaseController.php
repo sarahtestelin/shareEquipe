@@ -9,8 +9,8 @@ use App\Form\CategorieType;
 use App\Form\ContactType;
 use App\Form\FichierUserType;
 use App\Repository\ContactRepository;
-use App\Repository\UserRepository;
 use App\Repository\ScategorieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,9 +119,9 @@ class BaseController extends AbstractController
     #[Route('/private-profil', name: 'app_profil')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function profil(
-        Request $request, 
-        EntityManagerInterface $em, 
-        SluggerInterface $slugger, 
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger,
         ScategorieRepository $scategorieRepository
     ): Response {
         $fichier = new Fichier();
@@ -140,7 +140,6 @@ class BaseController extends AbstractController
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
 
                 try {
-                    
 
                     // Enregistrement des informations du fichier dans l'entité après le déplacement
                     $fichier->setNomOriginal($originalFilename);
@@ -187,21 +186,27 @@ class BaseController extends AbstractController
         ]);
     }
     #[Route('/delete-fichier/{id}', name: 'app_delete_fichier')]
-#[IsGranted('IS_AUTHENTICATED_FULLY')]
-public function deleteFichier(int $id, EntityManagerInterface $em): Response
-{
-    $fichier = $em->getRepository(Fichier::class)->find($id);
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function deleteFichier(int $id, EntityManagerInterface $em): Response
+    {
+        $fichier = $em->getRepository(Fichier::class)->find($id);
 
-    if (!$fichier || $fichier->getUser() !== $this->getUser()) {
-        $this->addFlash('error', 'Fichier non trouvé ou accès non autorisé.');
+        if (!$fichier || $fichier->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Fichier non trouvé ou accès non autorisé.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        $em->remove($fichier);
+        $em->flush();
+
+        $this->addFlash('success', 'Fichier supprimé avec succès.');
         return $this->redirectToRoute('app_profil');
     }
 
-    $em->remove($fichier);
-    $em->flush();
-
-    $this->addFlash('success', 'Fichier supprimé avec succès.');
-    return $this->redirectToRoute('app_profil');
-}
-
+    #[Route('/private-amis', name: 'app_amis')]
+    public function amis(): Response
+    {
+        return $this->render('base/amis.html.twig', [
+        ]);
+    }
 }
