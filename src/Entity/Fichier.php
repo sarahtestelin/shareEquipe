@@ -41,9 +41,16 @@ class Fichier
     #[ORM\ManyToMany(targetEntity: Scategorie::class, inversedBy: 'fichiers')]
     private Collection $scategories;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'fichiersPartages')]
+    private Collection $partageAvec;
+
     public function __construct()
     {
         $this->scategories = new ArrayCollection();
+        $this->partageAvec = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,6 +150,30 @@ class Fichier
     public function removeScategory(Scategorie $scategory): static
     {
         $this->scategories->removeElement($scategory);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getPartageAvec(): Collection
+    {
+        return $this->partageAvec;
+    }
+
+    public function addPartageAvec(User $partageAvec): static
+    {
+        if (!$this->partageAvec->contains($partageAvec)) {
+            $this->partageAvec->add($partageAvec);
+        }
+
+        return $this;
+    }
+
+    public function removePartageAvec(User $partageAvec): static
+    {
+        $this->partageAvec->removeElement($partageAvec);
 
         return $this;
     }

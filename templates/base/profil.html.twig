@@ -121,4 +121,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Section pour les fichiers partagés -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
+            <h2 class="text-center">Fichiers partagés avec vous</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="fw-bold text-primary">Nom du fichier</th>
+                            <th scope="col" class="fw-bold text-primary">Propriétaire</th>
+                            <th scope="col" class="fw-bold text-primary">Date d'ajout</th>
+                            <th scope="col" class="fw-bold text-primary">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if fichiersPartages|length > 0 %}
+                            {% for fichier in fichiersPartages %}
+                                <tr>
+                                    <td>{{ fichier.nomOriginal }}</td>
+                                    <td>{{ fichier.user.prenom }} {{ fichier.user.nom }}</td>
+                                    <td>{{ fichier.dateEnvoi | date("d-m-Y H:i") }}</td>
+                                    <td>
+                                        <a href="{{ path('app_telechargement_fichier', { id: fichier.id }) }}" class="btn btn-primary btn-sm">Télécharger</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Aucun fichier n'a été partagé avec vous.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

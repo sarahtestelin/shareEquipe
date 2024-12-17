@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte avec cet email !')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -45,7 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateEnvoi = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length : 30)]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 30)]
@@ -56,9 +56,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $oldPassword = null;
 
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\JoinTable(name: "user_demande")]
+    #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'demander_id', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: 'User', inversedBy: 'demander')]
+    private Collection $demander;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'demander')]
+    private Collection $usersDemande;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'userAccepte')]
+    private Collection $accepter;
+    #[ORM\JoinTable(name: "user_accepter",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "id")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "accepter_id", referencedColumnName: "id")]
+    )]
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'accepter')]
+    private Collection $userAccepte;
+
+    /**
+     * @var Collection<int, Fichier>
+     */
+    #[ORM\ManyToMany(targetEntity: Fichier::class, mappedBy: 'partageAvec')]
+    private Collection $fichiersPartages;
+
     public function __construct()
     {
         $this->fichiers = new ArrayCollection();
+        $this->demander = new ArrayCollection();
+        $this->usersDemande = new ArrayCollection();
+        $this->accepter = new ArrayCollection();
+        $this->userAccepte = new ArrayCollection();
+        $this->fichiersPartages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,6 +215,135 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($fichier->getUser() === $this) {
                 $fichier->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getDemander(): Collection
+    {
+        return $this->demander;
+    }
+
+    public function addDemander(self $demander): static
+    {
+        if (!$this->demander->contains($demander)) {
+            $this->demander->add($demander);
+        }
+
+        return $this;
+    }
+
+    public function removeDemander(self $demander): static
+    {
+        $this->demander->removeElement($demander);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getUsersDemande(): Collection
+    {
+        return $this->usersDemande;
+    }
+
+    public function addUsersDemande(self $usersDemande): static
+    {
+        if (!$this->usersDemande->contains($usersDemande)) {
+            $this->usersDemande->add($usersDemande);
+            $usersDemande->addDemander($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersDemande(self $usersDemande): static
+    {
+        if ($this->usersDemande->removeElement($usersDemande)) {
+            $usersDemande->removeDemander($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getAccepter(): Collection
+    {
+        return $this->accepter;
+    }
+
+    public function addAccepter(self $accepter): static
+    {
+        if (!$this->accepter->contains($accepter)) {
+            $this->accepter->add($accepter);
+        }
+
+        return $this;
+    }
+
+    public function removeAccepter(self $accepter): static
+    {
+        $this->accepter->removeElement($accepter);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getUserAccepte(): Collection
+    {
+        return $this->userAccepte;
+    }
+
+    public function addUserAccepte(self $userAccepte): static
+    {
+        if (!$this->userAccepte->contains($userAccepte)) {
+            $this->userAccepte->add($userAccepte);
+            $userAccepte->addAccepter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserAccepte(self $userAccepte): static
+    {
+        if ($this->userAccepte->removeElement($userAccepte)) {
+            $userAccepte->removeAccepter($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Fichier>
+     */
+    public function getFichiersPartages(): Collection
+    {
+        return $this->fichiersPartages;
+    }
+
+    public function addFichiersPartage(Fichier $fichiersPartage): static
+    {
+        if (!$this->fichiersPartages->contains($fichiersPartage)) {
+            $this->fichiersPartages->add($fichiersPartage);
+            $fichiersPartage->addPartageAvec($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFichiersPartage(Fichier $fichiersPartage): static
+    {
+        if ($this->fichiersPartages->removeElement($fichiersPartage)) {
+            $fichiersPartage->removePartageAvec($this);
         }
 
         return $this;
