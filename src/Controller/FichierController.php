@@ -98,35 +98,34 @@ class FichierController extends AbstractController
             $fichier->getNomOriginal()
         );
     }
-
-    #[Route('/private-partager-fichiers', name: 'app_partager_fichiers')]
+  #[Route('/private-partager-fichiers', name: 'app_partager_fichiers')]
     public function partagerFichiers(
         Request $request,
         EntityManagerInterface $em,
         UserRepository $userRepository
     ): Response {
-        // Récupérer l'utilisateur connecté et ses fichiers
-        $user = $this->getUser();
+        
+        $user = $this->getUser(); // Récupérer l'utilisateur connecté et ses fichiers
         $fichiers = $user->getFichiers(); // Récupère tous les fichiers de l'utilisateur connecté
 
         // Récupérer les amis de l'utilisateur
         $amis = $user->getAccepter(); //  Récupère la liste des amis acceptés.
 
         // Gestion de la soumission du formulaire
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST')) { // Récupère les données soumises par le formulaire via la requête POST.  
             $data = $request->request->all(); // On récupère les fichiers et amis sélectionnés
 
-            if (isset($data['amis']) && isset($data['fichiers'])) {
-                $amisSelectionnes = $data['amis'];
-                $fichiersSelectionnes = $data['fichiers'];
+            if (isset($data['amis']) && isset($data['fichiers'])) { // Vérifie si les champs "amis" et "fichiers" sont présents dans les données soumises.
+                $amisSelectionnes = $data['amis']; // Récupère les identifiants des amis sélectionnés pour le partage.
+                $fichiersSelectionnes = $data['fichiers']; // Récupère les identifiants des fichiers sélectionnés pour le partage.
 
-                foreach ($fichiersSelectionnes as $fichierId) {
-                    $fichier = $em->getRepository(Fichier::class)->find($fichierId);
-                    if ($fichier && $fichier->getUser() === $user) {
-                        foreach ($amisSelectionnes as $amiId) {
-                            $ami = $userRepository->find($amiId);
-                            if ($ami) {
-                                $fichier->addPartageAvec($ami);
+                foreach ($fichiersSelectionnes as $fichierId) { // Boucle sur chaque fichier sélectionné pour traiter son partage.
+                    $fichier = $em->getRepository(Fichier::class)->find($fichierId); // Recherche en base de données l'entité Fichier correspondant à l'ID $ficherId
+                    if ($fichier && $fichier->getUser() === $user) { // Vérifie qur le fichier existe et qu'il appartient bien à l'user connecté
+                        foreach ($amisSelectionnes as $amiId) {  // Parcourt la liste des amis sélectionnés dans le formulaire soumis avec une boucle
+                            $ami = $userRepository->find($amiId); // Recherche en base de données l'utilisateur correspondant à l'ID $amiId
+                            if ($ami) { // Vérifie que l'utilisateur (ami) a été trouvé en base de données que'$ami n'est pas null
+                                $fichier->addPartageAvec($ami);  // Si il est pas null ça ajoute cet ami à la liste des utilisateurs avec lesquels ce fichier est partagé.
                             }
                         }
                         $em->persist($fichier);
@@ -144,6 +143,7 @@ class FichierController extends AbstractController
             'amis' => $amis,
         ]);
     }
+  
 
 #[Route('/private-annuler-partage/{fichierId}/{amiId}', name: 'app_annuler_partage')]
 public function annulerPartage(int $fichierId, int $amiId, EntityManagerInterface $em, UserRepository $userRepository): Response

@@ -1,178 +1,182 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>
-        {% block title %}Share - {% endblock %}
-    </title>
-    {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        <link href="https://bootswatch.com/5/lumen/bootstrap.min.css" rel="stylesheet"/>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
-        <style>
-            body {
-                background-color: #f8f9fa;
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-            }
-            .navbar {
-                background-color: white;
-                padding: 15px 20px;
-                box-shadow: none;
-            }
-            .navbar-brand {
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #343a40;
-            }
-            .nav-link {
-                color: #343a40;
-                padding: 10px 15px;
-                border-radius: 5px;
-                transition: background-color 0.3s, color 0.3s;
-            }
-            .nav-link:hover {
-                background-color: #007bff;
-                color: white;
-            }
-            .hero {
-                background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
-                color: white;
-                padding: 80px 0;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-            }
-            .hero h1 {
-                font-size: 4rem;
-                margin-bottom: 20px;
-                animation: fadeIn 1s ease-in-out;
-            }
-            .hero h2 {
-                font-size: 1.8rem;
-                margin-bottom: 30px;
-                animation: fadeIn 1.2s ease-in-out;
-            }
-            .feature-icons {
-                font-size: 60px;
-                margin: 20px;
-                color: #fff;
-            }
-            .card {
-                transition: transform 0.2s;
-            }
-            .card:hover {
-                transform: translateY(-10px);
-            }
-            .btn-gradient {
-                background: linear-gradient(135deg, #6f42c1, #007bff);
-                color: white;
-                padding: 15px 30px;
-                font-size: 1.2rem;
-                border-radius: 25px;
-                transition: background-color 0.3s, transform 0.3s;
-                border: none;
-                text-decoration: none;
-            }
-            .btn-gradient:hover {
-                transform: translateY(-3px);
-                filter: brightness(90%);
-            }
-            .footer {
-                background-color: #d3d3d3;
-                color: #343a40;
-                padding: 2px 0;
-                text-align: center;
-                font-size: 0.8rem;
-                margin-top: auto;
-            }
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-        </style>
-    {% endblock %}
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ path('app_accueil') }}">Share</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarColor03">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ path('app_accueil') }}">Home<span class="visually-hidden">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_contact') }}">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_apropos') }}">À propos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_mentionslegales') }}">Mentions légales</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Catégories</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ path('app_categorie') }}">Ajout</a>
-                            <a class="dropdown-item" href="{{ path('app_liste_categories') }}">Liste des catégories</a>
-                        </div>
-                    </li>
-                </ul>
-                <div class="d-flex ms-auto">
-                    <ul class="navbar-nav list-unstyled">
-                        {% if app.user %}
-                            <li class="nav-item d-flex align-items-center">
-                                <a class="nav-link" href="{{ path('app_profil') }}">
-                                    <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
-                                </a>
-                                <a class="nav-link ms-2" href="{{ path('app_logout') }}" title="Se déconnecter">
-                                    <i class="bi bi-x-circle" style="font-size: 1.5rem; color: #dc3545;"></i>
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Authentification</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a>
-                                    <a class="dropdown-item" href="{{ path('app_register') }}">S'inscrire</a>
-                                </div>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>
+			{% block title %}Share -
+			{% endblock %}
+		</title>
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+			<link href="https://bootswatch.com/5/lumen/bootstrap.min.css" rel="stylesheet"/>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
+			<style>
+				body {
+					background-color: #f8f9fa;
+					font-family: 'Arial', sans-serif;
+					margin: 0;
+					padding: 0;
+					display: flex;
+					flex-direction: column;
+					min-height: 100vh;
+				}
+				.navbar {
+					background-color: white;
+					padding: 15px 20px;
+					box-shadow: none;
+				}
+				.navbar-brand {
+					font-size: 1.5rem;
+					font-weight: bold;
+					color: #343a40;
+				}
+				.nav-link {
+					color: #343a40;
+					padding: 10px 15px;
+					border-radius: 5px;
+					transition: background-color 0.3s, color 0.3s;
+				}
+				.nav-link:hover {
+					background-color: #007bff;
+					color: white;
+				}
+				.hero {
+					background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
+					color: white;
+					padding: 80px 0;
+					text-align: center;
+					position: relative;
+					overflow: hidden;
+				}
+				.hero h1 {
+					font-size: 4rem;
+					margin-bottom: 20px;
+					animation: fadeIn 1s ease-in-out;
+				}
+				.hero h2 {
+					font-size: 1.8rem;
+					margin-bottom: 30px;
+					animation: fadeIn 1.2s ease-in-out;
+				}
+				.feature-icons {
+					font-size: 60px;
+					margin: 20px;
+					color: #fff;
+				}
+				.card {
+					transition: transform 0.2s;
+				}
+				.card:hover {
+					transform: translateY(-10px);
+				}
+				.btn-gradient {
+					background: linear-gradient(135deg, #6f42c1, #007bff);
+					color: white;
+					padding: 15px 30px;
+					font-size: 1.2rem;
+					border-radius: 25px;
+					transition: background-color 0.3s, transform 0.3s;
+					border: none;
+					text-decoration: none;
+				}
+				.btn-gradient:hover {
+					transform: translateY(-3px);
+					filter: brightness(90%);
+				}
+				.footer {
+					background-color: #d3d3d3;
+					color: #343a40;
+					text-align: center;
+					margin-top: auto;
+				}
+			</style>
+		{% endblock %}
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="{{ path('app_accueil') }}">Share</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarColor03">
+					<ul class="navbar-nav me-auto">
+						<li class="nav-item">
+							<a class="nav-link active" href="{{ path('app_accueil') }}">Home<span class="visually-hidden">(current)</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path('app_contact') }}">Contact</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path('app_apropos') }}">À propos</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path('app_mentionslegales') }}">Mentions légales</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Catégories</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="{{ path('app_categorie') }}">Ajout</a>
+								<a class="dropdown-item" href="{{ path('app_liste_categories') }}">Liste des catégories</a>
+							</div>
+						</li>
+						{% if app.user and is_granted('ROLE_MOD') %}
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="{{ path('app_statistiques') }}">Statistiques</a>
+								</div>
+							</li>
+						{% endif %}
+					</ul>
+					<div class="d-flex ms-auto">
+						<ul class="navbar-nav list-unstyled">
+							{% if app.user %}
+								<li class="nav-item d-flex align-items-center">
+									<a class="nav-link" href="{{ path('app_profil') }}">
+										<i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+									</a>
+									<a class="nav-link ms-2" href="{{ path('app_logout') }}" title="Se déconnecter">
+										<i class="bi bi-x-circle" style="font-size: 1.5rem; color: #dc3545;"></i>
+									</a>
+								</li>
+							{% else %}
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Authentification</a>
+									<div class="dropdown-menu">
+										<a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a>
+										<a class="dropdown-item" href="{{ path('app_register') }}">S'inscrire</a>
+									</div>
+								</li>
+							{% endif %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
 
-    <div class="container">
-        {% for message in app.flashes('notice') %}
-            <h2 class="alert alert-warning text-center mt-4 mb-4" role="alert">
-                {{ message }}
-            </h2>
-        {% endfor %}
-    </div>
+		<div class="container">
+			{% for message in app.flashes('notice') %}
+				<h2 class="alert alert-warning text-center mt-4 mb-4" role="alert">
+					{{ message }}
+				</h2>
+			{% endfor %}
+		</div>
 
-    {% block body %}{% endblock %}
+		{% block body %}{% endblock %}
 
-    <footer class="footer">
-        <div class="container">
-            <p class="text-center">&copy; 2024 Share. Tous droits réservés.</p>
-        </div>
-    </footer>
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+			{{ encore_entry_script_tags('captcha') }}
 
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-        {{ encore_entry_script_tags('captcha') }} {# Inclusion de captcha.js #}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    {% endblock %}
-</body>
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+			<footer class="footer">
+			<div>
+				<p> 2024 Share. Tous droits réservés.</p>
+			</div>
+			</footer>
+		{% endblock %}
+	</body>
 </html>
