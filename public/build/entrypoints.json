@@ -1,0 +1,20 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.js",
+        "/build/app.js"
+      ],
+      "css": [
+        "/build/app.css"
+      ]
+    },
+    "captcha": {
+      "js": [
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-3ea64e.js",
+        "/build/captcha.js"
+      ]
+    }
+  }
+}
