@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FichierRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,6 +34,24 @@ class Fichier
     #[ORM\ManyToOne(inversedBy: 'fichiers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, Scategorie>
+     */
+    #[ORM\ManyToMany(targetEntity: Scategorie::class, inversedBy: 'fichiers')]
+    private Collection $scategories;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'fichiersPartages')]
+    private Collection $partageAvec;
+
+    public function __construct()
+    {
+        $this->scategories = new ArrayCollection();
+        $this->partageAvec = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +126,54 @@ class Fichier
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Scategorie>
+     */
+    public function getScategories(): Collection
+    {
+        return $this->scategories;
+    }
+
+    public function addScategory(Scategorie $scategory): static
+    {
+        if (!$this->scategories->contains($scategory)) {
+            $this->scategories->add($scategory);
+        }
+
+        return $this;
+    }
+
+    public function removeScategory(Scategorie $scategory): static
+    {
+        $this->scategories->removeElement($scategory);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getPartageAvec(): Collection
+    {
+        return $this->partageAvec;
+    }
+
+    public function addPartageAvec(User $partageAvec): static
+    {
+        if (!$this->partageAvec->contains($partageAvec)) {
+            $this->partageAvec->add($partageAvec);
+        }
+
+        return $this;
+    }
+
+    public function removePartageAvec(User $partageAvec): static
+    {
+        $this->partageAvec->removeElement($partageAvec);
 
         return $this;
     }

@@ -1,0 +1,67 @@
+/* assets/css/captcha.css */
+
+#captcha {
+    margin-top: 0.5rem; /* Réduit la marge supérieure */
+}
+
+#captcha .d-flex {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Réduit l'espace entre les éléments */
+}
+
+#captcha .captcha-code {
+    font-size: 1em; /* Réduit la taille de la police */
+    font-weight: bold;
+    background-color: #f0f0f0;
+    padding: 3px 6px; /* Réduit le padding */
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Légèrement moins arrondi */
+}
+
+#captcha input#captchaInput {
+    margin-top: 0.3rem; /* Réduit la marge supérieure */
+    padding: 0.4rem; /* Réduit le padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 0.9em; /* Réduit la taille de la police */
+}
+
+#captcha button#refreshCaptcha {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1em; /* Réduit la taille de la police */
+    padding: 0;
+}
+
+#captcha button#refreshCaptcha:hover {
+    color: #007bff; /* Couleur de survol, ajustez selon votre thème */
+}
+
+/* Optionnel : Ajustements Responsives */
+@media (max-width: 576px) {
+    #captcha {
+        margin-top: 0.3rem; /* Encore plus réduit sur petits écrans */
+    }
+
+    #captcha .d-flex {
+        gap: 4px; /* Espacement encore plus réduit */
+    }
+
+    #captcha .captcha-code {
+        font-size: 0.9em; /* Taille de police encore plus réduite */
+        padding: 2px 5px; /* Padding encore plus réduit */
+    }
+
+    #captcha input#captchaInput {
+        margin-top: 0.2rem; /* Marge supérieure encore plus réduite */
+        padding: 0.3rem; /* Padding encore plus réduit */
+        font-size: 0.8em; /* Taille de police encore plus réduite */
+    }
+
+    #captcha button#refreshCaptcha {
+        font-size: 0.9em; /* Taille de police encore plus réduite */
+    }
+}
