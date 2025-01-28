@@ -1,6 +1,8 @@
 import '../css/app.css'; 
 import './components/captcha.js';
 import '../css/captcha.css'; 
+import './components/statinscrits.js';
+
 
 
 // Importer le composant captcha
