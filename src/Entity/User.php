@@ -92,6 +92,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Fichier::class, mappedBy: 'partageAvec')]
     private Collection $fichiersPartages;
 
+    /**
+     * @var Collection<int, Connexion>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Connexion::class, orphanRemoval: true)]
+    private Collection $connexions;
+
     public function __construct()
     {
         $this->fichiers = new ArrayCollection();
@@ -100,6 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->accepter = new ArrayCollection();
         $this->userAccepte = new ArrayCollection();
         $this->fichiersPartages = new ArrayCollection();
+        $this->connexions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -344,6 +351,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->fichiersPartages->removeElement($fichiersPartage)) {
             $fichiersPartage->removePartageAvec($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Connexion>
+     */
+    public function getConnexions(): Collection
+    {
+        return $this->connexions;
+    }
+
+    public function addConnexion(Connexion $connexion): static
+    {
+        if (!$this->connexions->contains($connexion)) {
+            $this->connexions->add($connexion);
+            $connexion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConnexion(Connexion $connexion): static
+    {
+        if ($this->connexions->removeElement($connexion)) {
+            // set the owning side to null (unless already changed)
+            if ($connexion->getUser() === $this) {
+                $connexion->setUser(null);
+            }
         }
 
         return $this;

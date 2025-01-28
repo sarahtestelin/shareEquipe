@@ -23,6 +23,8 @@ Encore
   .addEntry("app", "./assets/js/app.js") // Main app entry
   .addEntry("captcha", "./assets/js/components/captcha.js") // Entrée pour le script CAPTCHA
   .addEntry("statinscrits", "./assets/js/components/statinscrits.js")
+  .addEntry('jourconnexion', './assets/js/components/jourconnexion.js')
+
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()

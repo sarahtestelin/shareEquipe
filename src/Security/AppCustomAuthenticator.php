@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Security;
 
+use App\Entity\Connexion;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,14 +21,20 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
+
     public const LOGIN_ROUTE = 'app_login';
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
+
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private EntityManagerInterface $entityManager
+    ) {
     }
+
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
+
         return new Passport(
             new UserBadge($email),
             new PasswordCredentials($request->request->get('password', '')),
@@ -36,16 +45,27 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    {
+        $user = $token->getUser(); // Récupérer l'utilisateur connecté
 
-    
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response {
+        // Créer une nouvelle instance de Connexion
+        $connexion = new Connexion();
+        $connexion->setUser($user);
+        $connexion->setDateConnexion(new \DateTime()); // Enregistre la date et l'heure actuelles
+
+        // Persister et sauvegarder la connexion
+        $this->entityManager->persist($connexion);
+        $this->entityManager->flush();
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-        // For example:
+
+        // Redirection après succès de la connexion
         return new RedirectResponse($this->urlGenerator->generate('app_accueil'));
-        throw new \Exception('TODO: provide a valid redirect inside ' . __FILE__);
     }
+
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);

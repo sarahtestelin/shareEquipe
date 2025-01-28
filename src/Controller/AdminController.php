@@ -6,6 +6,9 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\ConnexionRepository;
+
 
 class AdminController extends AbstractController
 {
@@ -47,6 +50,13 @@ public function getStatistics(UserRepository $userRepository): Response
     ]);
 }
 
-    
+#[Route('/api/connections-data', name: 'api_connections_data', methods: ['GET'])]
+public function getConnectionsData(ConnexionRepository $connexionRepository): JsonResponse
+{
+    $connections = $connexionRepository->getConnectionsForLast31Days();
+
+    return $this->json($connections);
+}
+
     
 }
