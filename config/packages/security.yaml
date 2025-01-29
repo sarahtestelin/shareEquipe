@@ -29,6 +29,11 @@ security:
         # login form, uncomment the following line to always enable it.
         #always_remember_me: true
 
+      # Activation du throttling (limitation des tentatives de connexion)
+      login_throttling:
+        max_attempts: 5          # Nombre maximum de tentatives avant verrouillage
+        interval: '5 minutes'     # Période d'attente avant une nouvelle tentative
+
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
 

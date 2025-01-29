@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center">Gérer vos partages de fichiers</h1>
+
+        {# Formulaire pour partager des fichiers avec des amis #}
+        <form method="POST">
+            <div class="row">
+                <!-- Section Fichiers -->
+                <div class="col-md-6">
+                    <h3>Vos fichiers</h3>
+                    {% if fichiers is not empty %}
+                        <ul class="list-group">
+                            {% for fichier in fichiers %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <input type="checkbox" name="fichiers[]" value="{{ fichier.id }}">
+                                            {{ fichier.nomOriginal }} - {{ fichier.extension }} 
+                                            ({{ fichier.taille / 1024|round(2) }} Ko)
+                                        </div>
+                                    </div>
+
+                                    {# Afficher les amis avec qui ce fichier est partagé #}
+                                    {% if fichier.partageAvec is not empty %}
+                                        <div class="mt-2">
+                                            <strong>Partagé avec :</strong>
+                                            <ul class="mb-0">
+                                                {% for ami in fichier.partageAvec %}
+                                                    <li>
+                                                        {{ ami.prenom | capitalize }} {{ ami.nom | upper }}
+                                                        <a href="{{ path('app_annuler_partage', { fichierId: fichier.id, amiId: ami.id }) }}"
+                                                           class="btn btn-danger btn-sm ms-2">
+                                                            Annuler le partage
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted mt-2">Ce fichier n'a été partagé avec personne.</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">Vous n'avez aucun fichier pour le moment.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Section Amis -->
+                <div class="col-md-6">
+                    <h3>Vos amis</h3>
+                    {% if amis is not empty %}
+                        <ul class="list-group">
+                            {% for ami in amis %}
+                                <li class="list-group-item">
+                                    <input type="checkbox" name="amis[]" value="{{ ami.id }}">
+                                    {{ ami.prenom | capitalize }} {{ ami.nom | upper }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">Vous n'avez aucun ami pour le moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Partager les fichiers</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

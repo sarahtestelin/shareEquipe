@@ -16,28 +16,46 @@ use Symfony\Component\Routing\Attribute\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        Security $security,
+        EntityManagerInterface $entityManager
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+        // Récupération des valeurs CAPTCHA
+        $submittedCaptcha = $request->request->get('captchaValue'); // Généré côté client
+        $userCaptchaInput = $request->request->get('captchaInput'); // Saisi par l'utilisateur
 
-            $user->setDateEnvoi(new \Datetime());
-            $entityManager->persist($user);
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            // Validation du CAPTCHA
+            if ($submittedCaptcha !== $userCaptchaInput) {
+                $this->addFlash('error', 'Le CAPTCHA est incorrect. Veuillez réessayer.');
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form,
+                ]);
+            }
 
-            // do anything else you need here, like send an email
+            // Vérifie si le formulaire est valide
+            if ($form->isValid()) {
+                // Encode le mot de passe
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
 
-            return $security->login($user, AppCustomAuthenticator::class, 'main');
+                $user->setDateEnvoi(new \DateTime());
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                // Connecte l'utilisateur après l'inscription
+                return $security->login($user, AppCustomAuthenticator::class, 'main');
+            }
         }
 
         return $this->render('registration/register.html.twig', [

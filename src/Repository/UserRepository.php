@@ -64,4 +64,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function getUserStatistics(): array
+{
+    return $this->createQueryBuilder('u')
+        ->select('COUNT(u.id) as totalUsers, MAX(u.dateEnvoi) as lastRegistrationDate')
+        ->getQuery()
+        ->getSingleResult();
+}
+
 }
