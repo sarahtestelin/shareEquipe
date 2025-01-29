@@ -11,7 +11,7 @@ Connectez-vous {% endblock %} {% block body %}
         {% if error %}
         <div class="alert alert-danger">
           {{ error.messageKey|
-trans(error.messageData, 'security') }}
+          trans(error.messageData, 'security') }}
         </div>
         {% endif %} {% if app.user %}
         <div class="mb-3">
@@ -21,30 +21,12 @@ trans(error.messageData, 'security') }}
         </div>
         {% endif %}
         <label for="inputEmail">Email</label>
-        <input
-          type="email"
-          value="{{ last_username }}"
-          name="email"
-          id="inputEmail"
-          class="form-control"
-          autocomplete="email"
-          required
-          autofocus
-        />
+        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
+          autocomplete="email" required autofocus />
         <label for="inputPassword">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="inputPassword"
-          class="form-control"
-          autocomplete="current-password"
-          required
-        />
-        <input
-          type="hidden"
-          name="_csrf_token"
-          value="{{ csrf_token('authenticate') }}"
-        />
+        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password"
+          required />
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
         <div class="text-center">
           <button class="btn btn-lg btn-primary mt-2" type="submit">
             Se connecter
