@@ -57,6 +57,5 @@ public function getConnectionsData(ConnexionRepository $connexionRepository): Js
 
     return $this->json($connections);
 }
-
     
 }
