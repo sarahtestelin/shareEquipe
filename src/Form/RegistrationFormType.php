@@ -32,6 +32,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['class'=> 'form-control'], 
                 'label_attr' => ['class'=>'fw-bold']
             ])
+            
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'data' => false,

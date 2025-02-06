@@ -42,22 +42,22 @@ class ConnexionRepository extends ServiceEntityRepository
     //    }
 
     public function getConnectionsForLast31Days(): array
-{
-    $conn = $this->getEntityManager()->getConnection();
+    {
+        $conn = $this->getEntityManager()->getConnection();
 
-    $sql = '
-        SELECT 
-            DATE(date_connexion) as date, 
+        $sql = '
+        SELECT
+            DATE(date_connexion) as date,
             COUNT(*) as totalConnections
         FROM connexion
         WHERE date_connexion >= DATE_SUB(CURDATE(), INTERVAL 31 DAY)
         GROUP BY DATE(date_connexion)
         ORDER BY date ASC
     ';
-    $stmt = $conn->prepare($sql);
-    $resultSet = $stmt->executeQuery();
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
 
-    return $resultSet->fetchAllAssociative();
-}
+        return $resultSet->fetchAllAssociative();
+    }
 
 }
