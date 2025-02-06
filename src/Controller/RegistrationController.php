@@ -6,12 +6,13 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\AppCustomAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationController extends AbstractController
 {
@@ -20,28 +21,30 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         Security $security,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger // Ajout du logger pour debug propre
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        // Récupération des valeurs CAPTCHA
-        $submittedCaptcha = $request->request->get('captchaValue'); // Généré côté client
-        $userCaptchaInput = $request->request->get('captchaInput'); // Saisi par l'utilisateur
+        // Récupération du CAPTCHA généré côté client
+        $submittedCaptcha = $request->request->get('captchaValue');
 
         if ($form->isSubmitted()) {
-            // Validation du CAPTCHA
-            if ($submittedCaptcha !== $userCaptchaInput) {
-                $this->addFlash('error', 'Le CAPTCHA est incorrect. Veuillez réessayer.');
+            // Vérifie si le CAPTCHA est soumis
+            if (empty($submittedCaptcha)) {
+                $this->addFlash('error', 'Le CAPTCHA est requis.');
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form,
                 ]);
             }
 
-            // Vérifie si le formulaire est valide
+            // Vérification de la validité du formulaire
             if ($form->isValid()) {
-                // Encode le mot de passe
+                $logger->info("Formulaire valide, enregistrement en base...");
+
+                // Hachage du mot de passe
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
@@ -50,11 +53,22 @@ class RegistrationController extends AbstractController
                 );
 
                 $user->setDateEnvoi(new \DateTime());
-                $entityManager->persist($user);
-                $entityManager->flush();
 
-                // Connecte l'utilisateur après l'inscription
-                return $security->login($user, AppCustomAuthenticator::class, 'main');
+                try {
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                    $logger->info("Utilisateur enregistré avec succès !");
+                    $this->addFlash('success', 'Inscription réussie ! Vous êtes maintenant connecté.');
+
+                    // Connexion automatique après inscription
+                    return $security->login($user, AppCustomAuthenticator::class, 'main');
+                } catch (\Exception $e) {
+                    $logger->error("Erreur lors de l'enregistrement : " . $e->getMessage());
+                    $this->addFlash('error', 'Une erreur est survenue lors de l\'inscription.');
+                }
+            } else {
+                $logger->error("Formulaire invalide : " . (string) $form->getErrors(true));
+                $this->addFlash('error', 'Le formulaire contient des erreurs.');
             }
         }
 
