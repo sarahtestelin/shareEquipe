@@ -21,11 +21,12 @@ class Captcha {
             return;
         }
         element.innerHTML = `
+            <label class="fw-bold text-primary"> CAPTCHA </label>
             <div class="d-flex align-items-center gap-2">
                 <span class="captcha-code">${this.captchaValue}</span>
                 <button type="button" id="refreshCaptcha" class="btn btn-link" aria-label="Rafraîchir CAPTCHA">↻</button>
+                <input type="text" id="captchaInput" class="form-control mt-2" placeholder="Entrez le code affiché" required />
             </div>
-            <input type="text" id="captchaInput" class="form-control mt-2" placeholder="Entrez le code affiché" required />
         `;
 
         // Ajoute un événement pour rafraîchir le CAPTCHA

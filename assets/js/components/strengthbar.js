@@ -51,7 +51,7 @@ class StrengthBar {
 
 // Initialisation du composant lorsque la page est chargée
 document.addEventListener("DOMContentLoaded", () => {
-    new StrengthBar("registration_form_plainPassword", "password-strength-container", "password-strength-bar", "password-strength-text");
+    new StrengthBar("registration_form_plainPassword_first", "password-strength-container", "password-strength-bar", "password-strength-text");
 });
 
 export default StrengthBar;
