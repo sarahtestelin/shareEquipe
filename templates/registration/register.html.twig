@@ -1,67 +1,72 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ parent() }} - Inscription
+{{ parent() }} - Inscription
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Inscription</h1>
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
-                
-                {# Affiche les erreurs du formulaire #}
-                {{ form_errors(registrationForm) }}
+<div class="container-fluid">
+    <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">Inscription</h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 bg-white p-4 m-0 text-primary">
 
-                {# Début du formulaire #}
-                {{ form_start(registrationForm) }}
-                
-                {{ form_row(registrationForm.email) }}
-                {{ form_row(registrationForm.prenom) }}
-                {{ form_row(registrationForm.nom) }}
-                {{ form_row(registrationForm.plainPassword, { label: 'Password' }) }}
+            {# Affiche les erreurs du formulaire #}
+            {{ form_errors(registrationForm) }}
 
-                {# 🔹 Intégration du CAPTCHA via le composant JavaScript #}
-                <div id="captcha"></div> 
+            {# Début du formulaire #}
+            {{ form_start(registrationForm) }}
 
-                {# 🔹 Champ caché contenant la valeur du CAPTCHA générée côté client #}
-                <input type="hidden" name="captchaValue" id="hiddenCaptchaValue" />
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.prenom) }}
+            {{ form_row(registrationForm.nom) }}
 
-                {{ form_row(registrationForm.agreeTerms) }}
-
-                <div class="text-center">
-                    <button class="btn btn-lg btn-primary mt-4" type="submit">S'inscrire</button>
-                </div>
-
-                {{ form_end(registrationForm) }}
+            {{ form_row(registrationForm.plainPassword, { label: 'Password' }) }}
+            <div id="password-strength-container">
+                <div id="password-strength-bar"></div>
             </div>
+            <p id="password-strength-text"></p>
+
+            {# 🔹 Intégration du CAPTCHA via le composant JavaScript #}
+            <div id="captcha"></div>
+
+            {# 🔹 Champ caché contenant la valeur du CAPTCHA générée côté client #}
+            <input type="hidden" name="captchaValue" id="hiddenCaptchaValue" />
+
+            {{ form_row(registrationForm.agreeTerms) }}
+
+            <div class="text-center">
+                <button class="btn btn-lg btn-primary mt-4" type="submit">S'inscrire</button>
+            </div>
+
+            {{ form_end(registrationForm) }}
         </div>
     </div>
+</div>
 
-    {# Inclusion du fichier JS via Webpack Encore #}
-    {{ encore_entry_script_tags('app') }}
+{# Inclusion du fichier JS via Webpack Encore #}
+{{ encore_entry_script_tags('app') }}
 
-    {# 🔹 Vérification côté client du CAPTCHA avant soumission #}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector("form");
-            if (!form) {
-                console.error("Formulaire introuvable !");
-                return;
+{# 🔹 Vérification côté client du CAPTCHA avant soumission #}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector("form");
+        if (!form) {
+            console.error("Formulaire introuvable !");
+            return;
+        }
+
+        form.addEventListener("submit", (event) => {
+            const userInput = document.getElementById("captchaUserInput").value.trim();
+            const correctCaptcha = document.getElementById("hiddenCaptchaValue").value;
+
+            console.log("CAPTCHA attendu :", correctCaptcha);
+            console.log("CAPTCHA saisi :", userInput);
+
+            if (userInput !== correctCaptcha) {
+                event.preventDefault();
+                alert("CAPTCHA invalide. Veuillez réessayer.");
             }
-
-            form.addEventListener("submit", (event) => {
-                const userInput = document.getElementById("captchaUserInput").value.trim();
-                const correctCaptcha = document.getElementById("hiddenCaptchaValue").value;
-
-                console.log("CAPTCHA attendu :", correctCaptcha);
-                console.log("CAPTCHA saisi :", userInput);
-
-                if (userInput !== correctCaptcha) {
-                    event.preventDefault();
-                    alert("CAPTCHA invalide. Veuillez réessayer.");
-                }
-            });
         });
-    </script>
+    });
+</script>
 {% endblock %}

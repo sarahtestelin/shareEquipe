@@ -24,7 +24,7 @@ Encore
   .addEntry("captcha", "./assets/js/components/captcha.js") // Entrée pour le script CAPTCHA
   .addEntry("statinscrits", "./assets/js/components/statinscrits.js")
   .addEntry('jourconnexion', './assets/js/components/jourconnexion.js')
-
+  .addEntry('strengthbar', './assets/js/components/strengthbar.js')
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()
