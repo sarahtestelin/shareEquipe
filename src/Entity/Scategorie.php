@@ -2,15 +2,16 @@
 
 namespace App\Entity;
 
+use App\EventListener\ScategorieListener;
 use App\Repository\ScategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\EventListener\ScategorieListener;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ScategorieRepository::class)]
 #[ORM\EntityListeners([ScategorieListener::class])]
-
+#[UniqueEntity(fields: ['categorie', 'libelle'], message: 'Cette sous-catégorie existe déjà dans cette catégorie.')]
 class Scategorie
 {
     #[ORM\Id]
