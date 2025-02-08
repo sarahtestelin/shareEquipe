@@ -14,9 +14,7 @@
 						<thead>
 							<tr class="fw-bold text-primary">
 								<th scope="col">Nom</th>
-								<th scope="col"></th>
-								<th scope="col"></th>
-								<th scope="col"></th>
+								<th scope="col">Actions</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -35,16 +33,20 @@
 										{% endif %}
 									</td>
 									<td>
-										<a href="{{path("app_modifier_categorie",{'id':categorie.id})}}">
-											<i class="bi bi-pen-fill text-dark"></i>
-										</a>
-									</td>
-									<td>
-										<a href="{{path("app_supprimer_categorie",{'id':categorie.id})}}">
-											<i class="bi bi-trash-fill textdark"></i>
-										</a>
-									</td>
-									<td>{{ form_widget(form.categories[categorie.id]) }}</td>
+										<div class="d-inline-block me-2">
+											<a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}">
+												<i class="bi bi-pen-fill text-dark"></i>
+											</a>
+										</div>
+										<div class="d-inline-block me-2">
+											<a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}">
+												<i class="bi bi-trash-fill text-danger"></i>
+											</a>
+										</div>
+										<div class="d-inline-block">
+											{{ form_widget(form.categories[categorie.id]) }}
+										</div>
+									</td>									
 								</tr>
 							{% endfor %}
 						</tbody>
