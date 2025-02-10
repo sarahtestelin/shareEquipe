@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Fichier;
-use App\Form\FichierType;
+use App\Form\FichierForm;
 use App\Repository\ScategorieRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class FichierController extends AbstractController
@@ -22,13 +23,19 @@ class FichierController extends AbstractController
         return $this->render('fichier/index.html.twig', []);
     }
 
+
+    
     #[Route('/ajout-fichier', name: 'app_ajout_fichier')]
-    public function ajoutFichier(Request $request, ScategorieRepository $scategorieRepository,
-        EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    public function ajoutFichier(
+        Request $request,
+        ScategorieRepository $scategorieRepository,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ): Response {
         $fichier = new Fichier();
         $scategories = $scategorieRepository->findBy([], ['categorie' => 'asc', 'numero' => 'asc']);
 
-        $form = $this->createForm(FichierType::class, $fichier, ['scategories' => $scategories]);
+        $form = $this->createForm(FichierForm::class, $fichier, ['scategories' => $scategories]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -67,6 +74,8 @@ class FichierController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/mod-liste-fichiers', name: 'app_liste_fichiers')]
     public function listeFichier(UserRepository $userRepository): Response
     {
@@ -76,12 +85,16 @@ class FichierController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/liste-fichiers-par-utilisateur', name: 'app_liste_fichiers_par_utilisateur')]
     public function listeFichiersParUtilisateur(UserRepository $userRepository): Response
     {
         $users = $userRepository->findBy([], ['nom' => 'asc', 'prenom' => 'asc']);
         return $this->render('fichier/liste-fichiers-par-utilisateur.html.twig', ['users' => $users]);
     }
+
+
 
     #[Route('/private-telechargement-fichier/{id}', name: 'app_telechargement_fichier', requirements: ["id" => "\d+"])]
     public function telechargementFichier(Fichier $fichier): Response
@@ -98,13 +111,16 @@ class FichierController extends AbstractController
             $fichier->getNomOriginal()
         );
     }
-  #[Route('/private-partager-fichiers', name: 'app_partager_fichiers')]
+
+
+
+    #[Route('/private-partager-fichiers', name: 'app_partager_fichiers')]
     public function partagerFichiers(
         Request $request,
         EntityManagerInterface $em,
         UserRepository $userRepository
     ): Response {
-        
+
         $user = $this->getUser(); // Récupérer l'utilisateur connecté et ses fichiers
         $fichiers = $user->getFichiers(); // Récupère tous les fichiers de l'utilisateur connecté
 
@@ -143,38 +159,58 @@ class FichierController extends AbstractController
             'amis' => $amis,
         ]);
     }
-  
 
-#[Route('/private-annuler-partage/{fichierId}/{amiId}', name: 'app_annuler_partage')]
-public function annulerPartage(int $fichierId, int $amiId, EntityManagerInterface $em, UserRepository $userRepository): Response
-{
-    // Récupérer le fichier par son ID
-    $fichier = $em->getRepository(Fichier::class)->find($fichierId);
 
-    // Vérifier si le fichier existe et que l'utilisateur connecté en est le propriétaire
-    if (!$fichier || $fichier->getUser() !== $this->getUser()) {
-        $this->addFlash('error', 'Vous n\'êtes pas autorisé à annuler ce partage.');
+
+    #[Route('/private-annuler-partage/{fichierId}/{amiId}', name: 'app_annuler_partage')]
+    public function annulerPartage(int $fichierId, int $amiId, EntityManagerInterface $em, UserRepository $userRepository): Response
+    {
+        // Récupérer le fichier par son ID
+        $fichier = $em->getRepository(Fichier::class)->find($fichierId);
+
+        // Vérifier si le fichier existe et que l'utilisateur connecté en est le propriétaire
+        if (!$fichier || $fichier->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à annuler ce partage.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        // Récupérer l'ami par son ID
+        $ami = $userRepository->find($amiId);
+
+        if ($ami && $fichier->getPartageAvec()->contains($ami)) {
+            // Retirer l'ami de la liste des partages
+            $fichier->removePartageAvec($ami);
+
+            // Persister les changements
+            $em->persist($fichier);
+            $em->flush();
+
+            $this->addFlash('success', 'Partage annulé avec succès.');
+        } else {
+            $this->addFlash('error', 'L\'ami sélectionné ne figure pas dans les partages de ce fichier.');
+        }
+
+        // Redirection vers le profil ou une page spécifique
         return $this->redirectToRoute('app_profil');
     }
 
-    // Récupérer l'ami par son ID
-    $ami = $userRepository->find($amiId);
 
-    if ($ami && $fichier->getPartageAvec()->contains($ami)) {
-        // Retirer l'ami de la liste des partages
-        $fichier->removePartageAvec($ami);
 
-        // Persister les changements
-        $em->persist($fichier);
+    #[Route('/delete-fichier/{id}', name: 'app_delete_fichier')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function deleteFichier(int $id, EntityManagerInterface $em): Response
+    {
+        $fichier = $em->getRepository(Fichier::class)->find($id);
+
+        if (!$fichier || $fichier->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Fichier non trouvé ou accès non autorisé.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        $em->remove($fichier);
         $em->flush();
 
-        $this->addFlash('success', 'Partage annulé avec succès.');
-    } else {
-        $this->addFlash('error', 'L\'ami sélectionné ne figure pas dans les partages de ce fichier.');
+        $this->addFlash('success', 'Fichier supprimé avec succès.');
+        return $this->redirectToRoute('app_profil');
     }
-
-    // Redirection vers le profil ou une page spécifique
-    return $this->redirectToRoute('app_profil');
-}
-
 }

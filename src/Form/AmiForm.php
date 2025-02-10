@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType; // Importation du SubmitType
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AjoutAmiType extends AbstractType
+class AmiForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

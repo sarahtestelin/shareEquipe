@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Form\InscriptionForm;
 use App\Security\AppCustomAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -25,7 +25,7 @@ class RegistrationController extends AbstractController
         LoggerInterface $logger // Ajout du logger pour debug propre
     ): Response {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(InscriptionForm::class, $user);
         $form->handleRequest($request);
 
         // Récupération du CAPTCHA généré côté client

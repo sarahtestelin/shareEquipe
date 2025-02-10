@@ -2,8 +2,9 @@
 namespace App\Controller;
 
 use App\Entity\Categorie;
-use App\Form\ModifierCategorieType;
-use App\Form\SupprimerCategorieType;
+use App\Form\CategorieForm;
+use App\Form\ModifCategorieForm;
+use App\Form\SupprCategorieForm;
 use App\Repository\CategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,11 +15,49 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategorieController extends AbstractController
 {
+    #[Route('/ajout-categorie', name: 'app_ajout_categorie')]
+    public function ajoutCategorie(Request $request, EntityManagerInterface $em): Response
+    {
+        $categorie = new Categorie();
+        $form = $this->createForm(CategorieForm::class, $categorie);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $categorie->setDateEnvoi(new \Datetime());
+                $em->persist($categorie);
+                $em->flush();
+                $this->addFlash('notice', 'Formulaire pris en compte');
+                return $this->redirectToRoute('app_categorie');
+            }
+        }
+        return $this->render('base/categorie.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/modifier-categorie/{id}', name: 'app_modifier_categorie')]
+    public function modifierCategorie(Request $request, Categorie $categorie, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(ModifCategorieForm::class, $categorie);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->persist($categorie);
+                $em->flush();
+                $this->addFlash('notice', 'Catégorie modifiée');
+                return $this->redirectToRoute('app_liste_categories');
+            }
+        }
+        return $this->render('categorie/modifier-categorie.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/private-liste-categories', name: 'app_liste_categories', methods: ['GET', 'POST'])]
     public function listeCategories(Request $request, CategorieRepository $categorieRepository,
         EntityManagerInterface $em): Response {
         $categories = $categorieRepository->findAll();
-        $form = $this->createForm(SupprimerCategorieType::class, null, [
+        $form = $this->createForm(SupprCategorieForm::class, null, [
             'categories' => $categories,
         ]);
         $form->handleRequest($request);
@@ -37,23 +76,6 @@ class CategorieController extends AbstractController
         ]);
     }
 
-    #[Route('/private-modifier-categorie/{id}', name: 'app_modifier_categorie')]
-    public function modifierCategorie(Request $request, Categorie $categorie, EntityManagerInterface $em): Response
-    {
-        $form = $this->createForm(ModifierCategorieType::class, $categorie);
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $em->persist($categorie);
-                $em->flush();
-                $this->addFlash('notice', 'Catégorie modifiée');
-                return $this->redirectToRoute('app_liste_categories');
-            }
-        }
-        return $this->render('categorie/modifier-categorie.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
     #[Route('/private-supprimer-categorie/{id}', name: 'app_supprimer_categorie')]
     public function supprimerCategorie(Request $request, Categorie $categorie, EntityManagerInterface $em): Response
     {

@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Scategorie;
-use App\Form\AjoutScategorieType;
+use App\Form\ScategorieForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +15,7 @@ class ScategorieController extends AbstractController
     public function ajoutScategorie(Request $request, EntityManagerInterface $em): Response
     {
         $scategorie = new Scategorie();
-        $form = $this->createForm(AjoutScategorieType::class, $scategorie);
+        $form = $this->createForm(ScategorieForm::class, $scategorie);
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -34,6 +34,7 @@ class ScategorieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    
     #[Route('/modifier-scategorie', name: 'app_modifier_scategorie')]
     public function modifierScategorie(): Response
     {
