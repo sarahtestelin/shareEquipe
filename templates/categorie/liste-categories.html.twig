@@ -1,60 +1,86 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-	{{parent()}}Liste des catégories
+    {{ parent() }} Liste des catégories
 {% endblock %}
+
 {% block body %}
-	<div class="container-fluid">
-		<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
-			Liste des catégories</h1>
-		<div class="row justify-content-center">
-			<div class="col-12 col-md-8 bg-white p-4 m-0 text-primary">
-				<div class="table-responsive">
-					{{ form_start(form) }}
-					<table class="table table-hover">
-						<thead>
-							<tr class="fw-bold text-primary">
-								<th scope="col">Nom</th>
-								<th scope="col">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for categorie in categories |sort((a, b) => a.nom
-                        <=> b.nom) %}
-								<tr class="{{ cycle(['table-primary','table-secondary'], loop.index0) }}">
-									<td>{{ categorie.nom |capitalize }}
-										{% if categorie.scategories | length > 0 %}
-											<ul>
-												{% for sc in categorie.scategories |sort((a, b) => a.numero <=> b.numero) %}
-													<li>{{sc.numero}}
-														-
-														{{sc.libelle | capitalize }}</li>
-												{% endfor %}
-											</ul>
-										{% endif %}
-									</td>
-									<td>
-										<div class="d-inline-block me-2">
-											<a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}">
-												<i class="bi bi-pen-fill text-dark"></i>
-											</a>
-										</div>
-										<div class="d-inline-block me-2">
-											<a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}">
-												<i class="bi bi-trash-fill text-danger"></i>
-											</a>
-										</div>
-										<div class="d-inline-block">
-											{{ form_widget(form.categories[categorie.id]) }}
-										</div>
-									</td>									
-								</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-					{{ form_widget(form.supprimer) }}
-					{{ form_end(form) }}
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container-fluid">
+    <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
+        Liste des catégories
+    </h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 bg-white p-4 m-0 text-primary">
+            <div class="table-responsive">
+
+                {# Premier formulaire pour les catégories #}
+                {{ form_start(form) }}
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="fw-bold text-primary">
+                            <th scope="col">Nom</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for categorie in categories |sort((a, b) => a.nom <=> b.nom) %}
+                        <tr class="{{ cycle(['table-primary','table-secondary'], loop.index0) }}">
+                            <td>
+                                <strong>{{ categorie.nom | capitalize }}</strong>
+                            </td>
+                            <td>
+                                <div class="d-inline-block me-2">
+                                    <a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}">
+                                        <i class="bi bi-pen-fill text-dark"></i>
+                                    </a>
+                                </div>
+                                <div class="d-inline-block me-2">
+                                    <a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}">
+                                        <i class="bi bi-trash-fill text-danger"></i>
+                                    </a>
+                                </div>
+                                <div class="d-inline-block">
+                                    {{ form_widget(form.categories[categorie.id]) }}
+                                </div>
+                            </td>
+                        </tr>
+
+                        {# Sous-catégories de cette catégorie #}
+                        {% for sc in categorie.scategories |sort((a, b) => a.numero <=> b.numero) %}
+                        <tr class="{{ cycle(['table-light', 'table-secondary'], loop.index0) }}">
+                            <td class="ps-4">
+                                {{ sc.numero }} - {{ sc.libelle | capitalize }}
+                            </td>
+                            <td>
+                                <div class="d-inline-block me-2">
+                                    <a href="{{ path('app_modifier_scategorie', {'id': sc.id}) }}">
+                                        <i class="bi bi-pen-fill text-dark"></i>
+                                    </a>
+                                </div>
+                                <div class="d-inline-block me-2">
+                                    <a href="{{ path('app_supprimer_scategorie', {'id': sc.id}) }}">
+                                        <i class="bi bi-trash-fill text-danger"></i>
+                                    </a>
+                                </div>
+                                <div class="d-inline-block">
+                                    {{ form_widget(form.scategories[sc.id]) }}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {# Boutons de suppression en dehors du tableau #}
+                <div class="text-center">
+                    {{ form_widget(form.supprimer_c) }}
+                    {{ form_widget(form.supprimer_sc) }}
+                </div>
+                
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

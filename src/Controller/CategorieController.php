@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Categorie;
 use App\Form\CategorieForm;
 use App\Form\ModifCategorieForm;
 use App\Form\SupprCategorieForm;
+use App\Form\SupprScategorieForm;
 use App\Repository\CategorieRepository;
+use App\Repository\ScategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +30,7 @@ class CategorieController extends AbstractController
                 $em->persist($categorie);
                 $em->flush();
                 $this->addFlash('notice', 'Formulaire pris en compte');
-                return $this->redirectToRoute('app_categorie');
+                return $this->redirectToRoute('app_liste_categories');
             }
         }
         return $this->render('base/categorie.html.twig', [
@@ -54,30 +57,52 @@ class CategorieController extends AbstractController
     }
 
     #[Route('/private-liste-categories', name: 'app_liste_categories', methods: ['GET', 'POST'])]
-    public function listeCategories(Request $request, CategorieRepository $categorieRepository,
-        EntityManagerInterface $em): Response {
+    public function listeCategories(
+        Request $request,
+        CategorieRepository $categorieRepository,
+        SCategorieRepository $sCategorieRepository,
+        EntityManagerInterface $emi
+    ): Response {
         $categories = $categorieRepository->findAll();
+        $sCategories = $sCategorieRepository->findAll();
+
         $form = $this->createForm(SupprCategorieForm::class, null, [
             'categories' => $categories,
+            'scategories' => $sCategories,
         ]);
+
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $selectedCategories = $form->get('categories')->getData();
-            foreach ($selectedCategories as $categorie) {
-                $em->remove($categorie);
+            if ($form->get('supprimer_c')->isClicked()) {
+                $selectedCategories = $form->get('categories')->getData();
+                foreach ($selectedCategories as $categorie) {
+                    $emi->remove($categorie);
+                }
+                $this->addFlash('notice', 'Catégories supprimées avec succès');
             }
-            $em->flush();
-            $this->addFlash('notice', 'Catégories supprimées avec succès');
+        
+            if ($form->get('supprimer_sc')->isClicked()) {
+                $selectedSCategories = $form->get('scategories')->getData();
+                foreach ($selectedSCategories as $sCategorie) {
+                    $emi->remove($sCategorie);
+                }
+                $this->addFlash('notice', 'Sous-catégories supprimées avec succès');
+            }
+        
+            $emi->flush();
             return $this->redirectToRoute('app_liste_categories');
         }
+
         return $this->render('categorie/liste-categories.html.twig', [
             'categories' => $categories,
+            'scategories' => $sCategories,
             'form' => $form->createView(),
         ]);
     }
 
     #[Route('/private-supprimer-categorie/{id}', name: 'app_supprimer_categorie')]
-    public function supprimerCategorie(Request $request, Categorie $categorie, EntityManagerInterface $em): Response
+    public function supprimerCategorie(Categorie $categorie, EntityManagerInterface $em): Response
     {
         if ($categorie != null) {
             $em->remove($categorie);
