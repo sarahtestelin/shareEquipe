@@ -23,7 +23,7 @@
                     </thead>
                     <tbody>
                         {% for categorie in categories |sort((a, b) => a.nom <=> b.nom) %}
-                        <tr class="{{ cycle(['table-primary','table-secondary'], loop.index0) }}">
+                        <tr class="table-primary">
                             <td>
                                 <strong>{{ categorie.nom | capitalize }}</strong>
                             </td>
@@ -73,6 +73,7 @@
 
                 {# Boutons de suppression en dehors du tableau #}
                 <div class="text-center">
+                    {{ form_widget(form.modifier_selection) }}
                     {{ form_widget(form.supprimer_c) }}
                     {{ form_widget(form.supprimer_sc) }}
                 </div>

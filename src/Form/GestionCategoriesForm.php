@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class SupprCategorieForm extends AbstractType
+class GestionCategoriesForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -37,20 +37,26 @@ class SupprCategorieForm extends AbstractType
                 'required' => false
             ])
             ->add('supprimer_c', SubmitType::class, [
-                'label' => 'Supprimer la sélection',
-                'attr' => ['class' => 'btn btn-primary m-4']
+                'label' => 'Supprimer les catégories',
+                'attr' => ['class' => 'btn bg-warning m-4 border-1 text-white']
             ])
             ->add('supprimer_sc', SubmitType::class, [
-                'label' => 'Supprimer la sélection',
-                'attr' => ['class' => 'btn btn-danger m-4']
+                'label' => 'Supprimer les sous-catégories',
+                'attr' => ['class' => 'btn bg-danger m-4 border-1 text-white']
+            ])
+            ->add('modifier_selection', SubmitType::class, [
+                'label' => 'Modifier la sélection',
+                'attr' => ['class' => 'btn bg-success m-4 border-1 text-white']
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'csrf_protection' => true,
             'categories' => [],
-            'scategories' => []
+            'scategories' => [],
+            'method' => 'POST',
         ]);
     }
 }

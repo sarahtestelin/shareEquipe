@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }} Modifier les catégories
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold"> Modifier les catégories </h1>
+
+    {{ form_start(form) }}
+
+    <!-- Items -->
+    <div class="form-group">
+        <div class="row justify-content-center">
+            {% for itemField in form.items %}
+            <div class="col-md-2 mb-2 text-center">
+                <div class="d-flex justify-content-start align-items-center">
+                    {{ form_widget(itemField, {'attr': {'class': 'form-control rounded-pill'}}) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

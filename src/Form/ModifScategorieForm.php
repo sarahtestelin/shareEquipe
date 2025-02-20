@@ -29,7 +29,7 @@ class ModifScategorieForm extends AbstractType
                 },
             ])
             ->add('modifier', SubmitType::class, [
-                'attr' => ['class' => 'btn bg-primary text-white m-4'],
+                'attr' => ['class' => 'btn bg-primary border-1 text-white m-4'],
                 'row_attr' => ['class' => 'text-center']
             ]);
     }

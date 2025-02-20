@@ -21,6 +21,7 @@ class ModifCategorieForm extends AbstractType
                 'row_attr' => ['class' => 'text-center'],
             ]);
     }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
