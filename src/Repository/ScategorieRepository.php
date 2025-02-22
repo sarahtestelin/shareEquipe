@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Scategorie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\Categorie;
 
 /**
  * @extends ServiceEntityRepository<Scategorie>
@@ -46,13 +45,4 @@ class ScategorieRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-    public function trouverDoublon(int $numero, Categorie $categorie): int{
-        $qb = $this->createQueryBuilder('s')
-        ->select('COUNT(s)')
-        ->where('s.numero = :numero')
-        ->andWhere('s.categorie = :categorie')
-        ->setParameter('numero', $numero)
-        ->setParameter('categorie', $categorie->getId());
-        return $qb->getQuery()->getSingleScalarResult();
-        }
 }
