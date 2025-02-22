@@ -11,8 +11,6 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 bg-white p-4 m-0 text-primary">
             <div class="table-responsive">
-
-                {# Premier formulaire pour les catégories #}
                 {{ form_start(form) }}
                 <table class="table table-hover">
                     <thead>
@@ -22,29 +20,28 @@
                         </tr>
                     </thead>
                     <tbody>
+
                         {% for categorie in categories |sort((a, b) => a.nom <=> b.nom) %}
                             <tr class="table-primary">
                                 <td>
                                     <strong>{{ categorie.nom | capitalize }}</strong>
                                 </td>
                                 <td>
-                                    <div class="d-inline-block me-2">
-                                        <a href="{{ path('app_ajout_scategorie') }}">
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ path('app_ajout_scategorie') }}" title="Ajouter une sous-catégorie">
                                             <i class="bi bi-plus-circle text-dark"></i>
                                         </a>
-                                    </div>
-                                    <div class="d-inline-block me-2">
-                                        <a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}">
+                                        <a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}"
+                                            title="Modifier la catégorie">
                                             <i class="bi bi-pen-fill text-dark"></i>
                                         </a>
-                                    </div>
-                                    <div class="d-inline-block me-2">
-                                        <a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}">
+                                        <a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}"
+                                            title="Supprimer la catégorie">
                                             <i class="bi bi-trash-fill text-danger"></i>
                                         </a>
-                                    </div>
-                                    <div class="d-inline-block">
-                                        {{ form_widget(form.categories[categorie.id]) }}
+                                        <div>
+                                            {{ form_widget(form.categories[categorie.id]) }}
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -55,18 +52,19 @@
                                         {{ sc.numero }} - {{ sc.libelle | capitalize }}
                                     </td>
                                     <td>
-                                        <div class="d-inline-block me-2">
-                                            <a href="{{ path('app_modifier_scategorie', {'id': sc.id}) }}">
+                                        <div class="d-flex gap-2">
+                                            <span style="width: 16px;"></span>
+                                            <a href="{{ path('app_modifier_scategorie', {'id': sc.id}) }}"
+                                                title="Modifier la sous-catégorie">
                                                 <i class="bi bi-pen-fill text-dark"></i>
                                             </a>
-                                        </div>
-                                        <div class="d-inline-block me-2">
-                                            <a href="{{ path('app_supprimer_scategorie', {'id': sc.id}) }}">
+                                            <a href="{{ path('app_supprimer_scategorie', {'id': sc.id}) }}"
+                                                title="Supprimer la sous-catégorie">
                                                 <i class="bi bi-trash-fill text-danger"></i>
                                             </a>
-                                        </div>
-                                        <div class="d-inline-block">
-                                            {{ form_widget(form.scategories[sc.id]) }}
+                                            <div>
+                                                {{ form_widget(form.scategories[sc.id]) }}
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -75,15 +73,12 @@
                     </tbody>
                 </table>
 
-                {# Boutons de suppression en dehors du tableau #}
                 <div class="text-center">
                     {{ form_widget(form.modifier_selection) }}
                     {{ form_widget(form.supprimer_c) }}
                     {{ form_widget(form.supprimer_sc) }}
                 </div>
-
                 {{ form_end(form) }}
-
             </div>
         </div>
     </div>

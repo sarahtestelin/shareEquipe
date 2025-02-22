@@ -36,17 +36,17 @@ class GestionCategoriesForm extends AbstractType
                 'multiple' => true,
                 'required' => false
             ])
+            ->add('modifier_selection', SubmitType::class, [
+                'label' => 'Modifier la sélection',
+                'attr' => ['class' => 'btn bg-success m-4 border-1 text-white']
+            ])
             ->add('supprimer_c', SubmitType::class, [
                 'label' => 'Supprimer les catégories',
-                'attr' => ['class' => 'btn bg-warning m-4 border-1 text-white']
+                'attr' => ['class' => 'btn bg-danger m-4 border-1 text-white']
             ])
             ->add('supprimer_sc', SubmitType::class, [
                 'label' => 'Supprimer les sous-catégories',
                 'attr' => ['class' => 'btn bg-danger m-4 border-1 text-white']
-            ])
-            ->add('modifier_selection', SubmitType::class, [
-                'label' => 'Modifier la sélection',
-                'attr' => ['class' => 'btn bg-success m-4 border-1 text-white']
             ]);
     }
 
