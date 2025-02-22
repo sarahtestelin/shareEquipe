@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    {{ parent() }} Liste des catégories
+{{ parent() }} Liste des catégories
 {% endblock %}
 
 {% block body %}
@@ -23,51 +23,55 @@
                     </thead>
                     <tbody>
                         {% for categorie in categories |sort((a, b) => a.nom <=> b.nom) %}
-                        <tr class="table-primary">
-                            <td>
-                                <strong>{{ categorie.nom | capitalize }}</strong>
-                            </td>
-                            <td>
-                                <div class="d-inline-block me-2">
-                                    <a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}">
-                                        <i class="bi bi-pen-fill text-dark"></i>
-                                    </a>
-                                </div>
-                                <div class="d-inline-block me-2">
-                                    <a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}">
-                                        <i class="bi bi-trash-fill text-danger"></i>
-                                    </a>
-                                </div>
-                                <div class="d-inline-block">
-                                    {{ form_widget(form.categories[categorie.id]) }}
-                                </div>
-                            </td>
-                        </tr>
+                            <tr class="table-primary">
+                                <td>
+                                    <strong>{{ categorie.nom | capitalize }}</strong>
+                                </td>
+                                <td>
+                                    <div class="d-inline-block me-2">
+                                        <a href="{{ path('app_ajout_scategorie') }}">
+                                            <i class="bi bi-plus-circle text-dark"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-inline-block me-2">
+                                        <a href="{{ path('app_modifier_categorie', {'id': categorie.id}) }}">
+                                            <i class="bi bi-pen-fill text-dark"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-inline-block me-2">
+                                        <a href="{{ path('app_supprimer_categorie', {'id': categorie.id}) }}">
+                                            <i class="bi bi-trash-fill text-danger"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-inline-block">
+                                        {{ form_widget(form.categories[categorie.id]) }}
+                                    </div>
+                                </td>
+                            </tr>
 
-                        {# Sous-catégories de cette catégorie #}
-                        {% for sc in categorie.scategories |sort((a, b) => a.numero <=> b.numero) %}
-                        <tr class="{{ cycle(['table-info', 'table-light'], loop.index0) }}">
-                            <td class="ps-4">
-                                {{ sc.numero }} - {{ sc.libelle | capitalize }}
-                            </td>
-                            <td>
-                                <div class="d-inline-block me-2">
-                                    <a href="{{ path('app_modifier_scategorie', {'id': sc.id}) }}">
-                                        <i class="bi bi-pen-fill text-dark"></i>
-                                    </a>
-                                </div>
-                                <div class="d-inline-block me-2">
-                                    <a href="{{ path('app_supprimer_scategorie', {'id': sc.id}) }}">
-                                        <i class="bi bi-trash-fill text-danger"></i>
-                                    </a>
-                                </div>
-                                <div class="d-inline-block">
-                                    {{ form_widget(form.scategories[sc.id]) }}
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% endfor %}
+                            {% for sc in categorie.scategories |sort((a, b) => a.numero <=> b.numero) %}
+                                <tr class="{{ cycle(['table-info', 'table-light'], loop.index0) }}">
+                                    <td class="ps-4">
+                                        {{ sc.numero }} - {{ sc.libelle | capitalize }}
+                                    </td>
+                                    <td>
+                                        <div class="d-inline-block me-2">
+                                            <a href="{{ path('app_modifier_scategorie', {'id': sc.id}) }}">
+                                                <i class="bi bi-pen-fill text-dark"></i>
+                                            </a>
+                                        </div>
+                                        <div class="d-inline-block me-2">
+                                            <a href="{{ path('app_supprimer_scategorie', {'id': sc.id}) }}">
+                                                <i class="bi bi-trash-fill text-danger"></i>
+                                            </a>
+                                        </div>
+                                        <div class="d-inline-block">
+                                            {{ form_widget(form.scategories[sc.id]) }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% endfor %}
                     </tbody>
                 </table>
 
@@ -77,7 +81,7 @@
                     {{ form_widget(form.supprimer_c) }}
                     {{ form_widget(form.supprimer_sc) }}
                 </div>
-                
+
                 {{ form_end(form) }}
 
             </div>
