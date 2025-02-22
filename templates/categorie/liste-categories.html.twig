@@ -46,7 +46,7 @@
 
                         {# Sous-catégories de cette catégorie #}
                         {% for sc in categorie.scategories |sort((a, b) => a.numero <=> b.numero) %}
-                        <tr class="{{ cycle(['table-light', 'table-secondary'], loop.index0) }}">
+                        <tr class="{{ cycle(['table-info', 'table-light'], loop.index0) }}">
                             <td class="ps-4">
                                 {{ sc.numero }} - {{ sc.libelle | capitalize }}
                             </td>
