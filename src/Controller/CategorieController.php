@@ -9,7 +9,6 @@ use App\Form\ModifCategoriesForm;
 use App\Form\GestionCategoriesForm;
 use App\Repository\CategorieRepository;
 use App\Repository\ScategorieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

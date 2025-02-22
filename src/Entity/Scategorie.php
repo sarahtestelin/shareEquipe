@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\EventListener\ScategorieListener;
 use App\Repository\ScategorieRepository;
+use App\Validator\NoBadWords;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,6 +21,7 @@ class Scategorie
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[NoBadWords]
     private ?string $libelle = null;
 
     #[ORM\ManyToOne(inversedBy: 'scategories')]
