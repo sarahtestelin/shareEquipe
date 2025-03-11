@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 
 class BaseController extends AbstractController
 {
@@ -116,6 +118,7 @@ class BaseController extends AbstractController
             'users' => $users,
         ]);
     }
+
     #[Route('/private-profil', name: 'app_profil')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function profil(
@@ -285,4 +288,24 @@ class BaseController extends AbstractController
         return $this->redirectToRoute('app_amis');
     }
 
+    // Route pour supprimer un utilisateur
+    #[Route('/admin/user/delete/{id}', name: 'user_delete')]
+    public function delete(UserRepository $userRepository, $id, EntityManagerInterface $entityManager): RedirectResponse
+    {
+        // Récupérer l'utilisateur par son ID
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur introuvable.');
+            return $this->redirectToRoute('app_liste_utilisateurs');
+        }
+
+        // Supprimer l'utilisateur
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+
+        return $this->redirectToRoute('app_liste_utilisateurs'); // Rediriger vers la liste des utilisateurs
+    }
 }

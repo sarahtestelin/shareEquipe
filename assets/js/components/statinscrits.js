@@ -24,7 +24,7 @@ class StatInscrits {
         try {
             // Traiter les cas où la date est un objet complexe
             if (typeof rawDate === "object" && rawDate.date) {
-                rawDate = rawDate.date; // Extraire la valeur de la clé `date`
+                rawDate = rawDate.date; // Extraire la valeur de la clé date
             }
 
             // Remplacer l'espace par un 'T' pour convertir en format ISO 8601

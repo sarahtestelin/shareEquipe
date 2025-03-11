@@ -32,7 +32,7 @@ public function getStatistics(UserRepository $userRepository): Response
     $stats = $userRepository->getUserStatistics();
 
     $users = $userRepository->createQueryBuilder('u')
-        ->select('u.email, u.dateEnvoi')
+        ->select('u.email, u.dateEnvoi', 'u.id')
         ->getQuery()
         ->getArrayResult();
 
@@ -50,12 +50,12 @@ public function getStatistics(UserRepository $userRepository): Response
     ]);
 }
 
-#[Route('/api/connections-data', name: 'api_connections_data', methods: ['GET'])]
+#[Route('/api/connections-data', name: 'api_connections_data', methods: ['GET'])] // route qui permet de voir les connexions sur 31 jours
 public function getConnectionsData(ConnexionRepository $connexionRepository): JsonResponse
 {
     $connections = $connexionRepository->getConnectionsForLast31Days();
 
     return $this->json($connections);
 }
-    
+
 }
