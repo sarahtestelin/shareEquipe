@@ -14,13 +14,12 @@ use App\Repository\ScategorieRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
 
 class BaseController extends AbstractController
 {
@@ -127,6 +126,10 @@ class BaseController extends AbstractController
         SluggerInterface $slugger,
         ScategorieRepository $scategorieRepository
     ): Response {
+        // Récupérer l'utilisateur actuel
+        $user = $this->getUser();
+
+        // Formulaire de fichier (déjà existant)
         $fichier = new Fichier();
         $form = $this->createForm(FichierUserType::class, $fichier, [
             'scategories' => $scategorieRepository->findAll(),
@@ -146,7 +149,7 @@ class BaseController extends AbstractController
                     $fichier->setNomServeur($newFilename);
                     $fichier->setExtension($uploadedFile->guessExtension());
                     $fichier->setTaille($uploadedFile->getSize());
-                    $fichier->setUser($this->getUser());
+                    $fichier->setUser($user);
                     $fichier->setDateEnvoi(new \DateTime());
 
                     $selectedScategories = $form->get('scategories')->getData();
@@ -170,25 +173,51 @@ class BaseController extends AbstractController
             }
         }
 
+        // Récupérer la description soumise par le formulaire
+        if ($request->isMethod('POST') && $request->request->get('description')) {
+            $description = $request->request->get('description');
+            $user->setDescription($description); // Mettre à jour la description
+            $em->flush(); // Sauvegarder la modification dans la base de données
+            $this->addFlash('success', 'Votre description a été mise à jour.');
+        }
+
         // Récupérer les fichiers de l'utilisateur connecté
-        $userFiles = $em->getRepository(Fichier::class)->findBy(['user' => $this->getUser()]);
+        $userFiles = $em->getRepository(Fichier::class)->findBy(['user' => $user]);
 
         // Récupérer les fichiers partagés avec l'utilisateur connecté
         $fichiersPartages = $em->getRepository(Fichier::class)->createQueryBuilder('f')
             ->innerJoin('f.partageAvec', 'u')
             ->where('u.id = :userId')
-            ->setParameter('userId', $this->getUser()->getId())
+            ->setParameter('userId', $user->getId())
             ->getQuery()
             ->getResult();
 
         return $this->render('base/profil.html.twig', [
             'form' => $form->createView(),
-            'myuser' => $this->getUser(),
+            'myuser' => $user,
             'userFiles' => $userFiles,
             'fichiersPartages' => $fichiersPartages, // Ajouter les fichiers partagés à la vue
             'scategories' => $scategorieRepository->findAll(),
         ]);
     }
+
+    #[Route('/update-description', name: 'app_update_description')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function updateDescription(Request $request, EntityManagerInterface $em): RedirectResponse
+    {
+        $user = $this->getUser();
+        
+        // Récupérer la description du formulaire et la mettre à jour
+        $description = $request->request->get('description');
+        if ($description !== null) {
+            $user->setDescription($description);
+            $em->flush(); // Sauvegarder la nouvelle description
+            $this->addFlash('success', 'Description mise à jour avec succès.');
+        }
+
+        return $this->redirectToRoute('app_profil'); // Rediriger vers la page de profil
+    }
+
     #[Route('/delete-fichier/{id}', name: 'app_delete_fichier')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function deleteFichier(int $id, EntityManagerInterface $em): Response

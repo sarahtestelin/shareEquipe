@@ -52,6 +52,16 @@
                             </td>
                         </tr>
                         <tr>
+                            <th scope="col" class="fw-bold text-primary">Description :</th>
+                            <td>
+                                <!-- Formulaire pour mettre à jour la description -->
+                                <form method="POST" action="{{ path('app_update_description') }}">
+                                    <input type="text" class="form-control" name="description" value="{{ app.user.description }}" placeholder="Ajoutez une description...">
+                                    <button type="submit" class="btn btn-primary mt-2">Mettre à jour</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
                             <th scope="col" class="fw-bold text-primary">Fichiers uploadés :</th>
                             <td>{{ userFiles | length }}</td>
                         </tr>
