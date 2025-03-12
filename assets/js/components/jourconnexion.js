@@ -29,10 +29,9 @@ class JourConnexion {
         const ctx = document.getElementById(this.elementId).getContext("2d");
 
         // Labels : 31 derniers jours (dates)
-        const labels = data.map(item => item.date); // Récupère les dates depuis l'API
-
+        const labels = data.slice(-7).map(item => item.date); // Récupère les dates depuis l'API
         // Données : nombre de connexions par date
-        const connections = data.map(item => item.totalConnections); // Récupère les connexions depuis l'API
+        const connections = data.slice(-7).map(item => item.totalConnections); // Récupère les connexions depuis l'API
 
         // Configuration du graphique
         new Chart(ctx, {
@@ -41,7 +40,7 @@ class JourConnexion {
                 labels: labels,
                 datasets: [
                     {
-                        label: "Connexions des 31 derniers jours",
+                        label: "Connexions les 7 derniers jours",
                         data: connections,
                         borderColor: "rgba(75, 192, 192, 1)", // Ligne principale
                         backgroundColor: "rgba(75, 192, 192, 0.2)", // Zone sous la ligne
@@ -99,5 +98,5 @@ class JourConnexion {
 
 // Initialisation du composant lorsque la page est chargée
 document.addEventListener("DOMContentLoaded", () => {
-    new JourConnexion("connexion-graph", "https://s3-4684.nuage-peda.fr/shareEquipe/api/connections-data");
+    new JourConnexion("connexion-graph", "https://s3-4664.nuage-peda.fr/shareEquipe/api/connections-data");
 });
