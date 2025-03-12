@@ -117,6 +117,33 @@ class CategorieController extends AbstractController
             $selectedCategories = $form->get('categories')->getData()->toArray();
             $selectedSCategories = $form->get('scategories')->getData()->toArray();
 
+            // Quand l'utilisateur appuie sur ce bouton, les catégories sélectionnées sont supprimées
+            if ($form->get('supprimer_c')->isClicked()) {
+                $selectedCategories = $form->get('categories')->getData();
+                foreach ($selectedCategories as $categorie) {
+                    $em->remove($categorie);
+                }
+    
+                $em->flush();
+    
+                $this->addFlash('success', 'Catégories supprimées avec succès !');
+                return $this->redirectToRoute('app_liste_categories');
+            }
+
+            // Quand l'utilisateur appuie sur ce bouton, les sous-catégories sélectionnées sont supprimées
+            if ($form->get('supprimer_sc')->isClicked()) {
+                $selectedSCategories = $form->get('scategories')->getData();
+                foreach ($selectedSCategories as $sCategorie) {
+                    $em->remove($sCategorie);
+                }
+    
+                $em->flush();
+    
+                $this->addFlash('success', 'Sous-catégories supprimées avec succès !');
+                return $this->redirectToRoute('app_liste_categories');
+            }
+            
+            // Quand l'utilisateur appuie sur ce bouton, les catégories OU sous-catégories peuvent être modifiées.
             if ($form->get('modifier_selection')->isClicked()) {
                 if (!empty($selectedCategories)) {
                     $ids = array_map(fn ($c) => $c->getId(), $selectedCategories);

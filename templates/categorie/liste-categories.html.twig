@@ -8,6 +8,14 @@
     <h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
         Liste des catégories
     </h1>
+
+    {% for message in app.flashes('success') %}
+    <p class="alert alert-warning text-center" role="alert">
+        {{ message }}
+    </p>
+    {% endfor %}
+
+
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 bg-white p-4 m-0 text-primary">
             <div class="table-responsive">
@@ -22,7 +30,7 @@
                     <tbody>
 
                         {% for categorie in categories |sort((a, b) => a.nom <=> b.nom) %}
-                            <tr class="table-primary">
+                            <tr class="table-primary border-black border-2">
                                 <td>
                                     <strong>{{ categorie.nom | capitalize }}</strong>
                                 </td>
