@@ -35,7 +35,7 @@
                                     <strong>{{ categorie.nom | capitalize }}</strong>
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex categorie gap-2">
                                         <a href="{{ path('app_ajout_scategorie') }}" title="Ajouter une sous-catégorie">
                                             <i class="bi bi-plus-circle text-dark"></i>
                                         </a>
@@ -56,7 +56,7 @@
 
                             {% for sc in categorie.scategories |sort((a, b) => a.numero <=> b.numero) %}
                                 <tr class="{{ cycle(['table-info', 'table-light'], loop.index0) }}">
-                                    <td class="ps-4">
+                                    <td class="ps-4 sous-categorie">
                                         {{ sc.numero }} - {{ sc.libelle | capitalize }}
                                     </td>
                                     <td>

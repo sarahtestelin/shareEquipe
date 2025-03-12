@@ -25,6 +25,7 @@ Encore
   .addEntry("statinscrits", "./assets/js/components/statinscrits.js")
   .addEntry('jourconnexion', './assets/js/components/jourconnexion.js')
   .addEntry('strengthbar', './assets/js/components/strengthbar.js')
+  .addEntry('checkboxcategorystate', './assets/js/checkboxCategoryState.js')
 
   // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
   .splitEntryChunks()
