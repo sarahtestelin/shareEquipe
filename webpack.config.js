@@ -24,6 +24,7 @@ Encore
   .addEntry("captcha", "./assets/js/components/captcha.js") // Entrée pour le script CAPTCHA
   .addEntry("statinscrits", "./assets/js/components/statinscrits.js")
   .addEntry('jourconnexion', './assets/js/components/jourconnexion.js')
+  .addEntry("categoriestats", "./assets/js/components/categoriestats.js")
   .addEntry('strengthbar', './assets/js/components/strengthbar.js')
   .addEntry('checkboxcategorystate', './assets/js/checkboxCategoryState.js')
 

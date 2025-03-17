@@ -41,7 +41,7 @@ class ConnexionRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function getConnectionsForLast31Days(): array
+    public function getConnectionsForLast7Days(): array
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -50,7 +50,7 @@ class ConnexionRepository extends ServiceEntityRepository
             DATE(date_connexion) as date,
             COUNT(*) as totalConnections
         FROM connexion
-        WHERE date_connexion >= DATE_SUB(CURDATE(), INTERVAL 31 DAY)
+        WHERE date_connexion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
         GROUP BY DATE(date_connexion)
         ORDER BY date ASC
     ';

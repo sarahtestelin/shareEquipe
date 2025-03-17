@@ -26,7 +26,18 @@ Statistiques
 			</div>
 		</div>
 
+		<div class="container-fluid">
+			<h3 class="text-center text-secondary mb-3">Catégories sur 7 jours précédents</h3>
+			<div class="row justify-content-center">
+				<div class="col-12 col-md-8 bg-white p-4 m-0 text-primary">
+					<!-- Conteneur pour le graphique -->
+					<canvas id="categorie-graph" width="400" height="200"></canvas>
+				</div>
+			</div>
+		</div>
+
 		<!-- Intégration des scripts -->
-		{{ encore_entry_script_tags('statinscrits') }}
 		{{ encore_entry_script_tags('jourconnexion') }}
+		{{ encore_entry_script_tags('statinscrits') }}
+		{{ encore_entry_script_tags('categoriestats') }}
 		{% endblock %}

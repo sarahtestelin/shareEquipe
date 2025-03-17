@@ -39,17 +39,16 @@ class StrengthBar {
         const majusculesVerif = (password.match(/[A-Z]/g) || []).length;
         const chiffresVerif = (password.match(/[0-9]/g) || []).length;
 
-        if (!longueurRequise) return 0; // Trop court = Très faible
+        if (!longueurRequise) return 0; // Très faible
+        if (score === 0) score = 1; // Faible
         if (minusculesVerif >= 1 && majusculesVerif >= 1 && chiffresVerif >= 1) score = 2; // Normal
         if (minusculesVerif >= 2 && majusculesVerif >= 2 && chiffresVerif >= 2) score = 3; // Fort
         if (minusculesVerif >= 3 && majusculesVerif >= 3 && chiffresVerif >= 3) score = 4; // Très fort
-        if (score === 0) score = 1; // Si assez long mais sans les exigences requises, considérer comme faible
 
         return score;
     }
 }
 
-// Initialisation du composant lorsque la page est chargée
 document.addEventListener("DOMContentLoaded", () => {
     new StrengthBar("inscription_form_plainPassword_first", "password-strength-container", "password-strength-bar", "password-strength-text");
 });

@@ -3,6 +3,7 @@ import './components/captcha.js';
 import '../css/captcha.css'; 
 import './components/statinscrits.js';
 import './components/jourconnexion.js';
+import './components/categoriestats.js';
 import './components/strengthbar.js';
 import '../css/strengthbar.css';
 import './checkboxCategoryState.js';

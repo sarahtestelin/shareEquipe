@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ConnexionRepository;
+use App\Repository\CategorieRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,8 +53,16 @@ class AdminController extends AbstractController
     #[Route('/api/connections-data', name: 'api_connections_data', methods: ['GET'])]
     public function getConnectionsData(ConnexionRepository $connexionRepository): JsonResponse
     {
-        $connections = $connexionRepository->getConnectionsForLast31Days();
+        $connections = $connexionRepository->getConnectionsForLast7Days();
 
         return $this->json($connections);
+    }
+
+    #[Route('/api/category-statistics', name: 'api_category_statistics', methods: ['GET'])]
+    public function getCategoryStatistics(CategorieRepository $categorieRepository): JsonResponse
+    {
+        $categoriesStats = $categorieRepository->getCategoriesStatistics();
+
+        return $this->json($categoriesStats);
     }
 }

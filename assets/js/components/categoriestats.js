@@ -1,17 +1,15 @@
 import { Chart, registerables } from "chart.js";
 
-// Enregistrer les composants nécessaires
 Chart.register(...registerables);
 
-class JourConnexion {
+class CategoryStats {
     constructor(elementId, apiUrl) {
         this.elementId = elementId;
         this.apiUrl = apiUrl;
         this.fetchAndRenderGraph();
     }
 
-    // Récupère les données des connexions via l'API
-    async fetchConnectionsData() {
+    async fetchCategoryData() {
         try {
             const response = await fetch(this.apiUrl);
             if (!response.ok) {
@@ -24,33 +22,26 @@ class JourConnexion {
         }
     }
 
-    // Génère le graphique
     renderGraph(data) {
         const ctx = document.getElementById(this.elementId).getContext("2d");
+        const labels = data.map(item => item.date);
+        const categoriesCount = data.map(item => item.totalCategories);
 
-        // Labels : 7 derniers jours (dates)
-        const labels = data.slice(-7).map(item => item.date); // Récupère les dates depuis l'API
-        // Données : nombre de connexions par date
-        const connections = data.slice(-7).map(item => item.totalConnections); // Récupère les connexions depuis l'API
-
-        // Configuration du graphique
         new Chart(ctx, {
-            type: "line", // Type de graphique en ligne
+            type: "line",
             data: {
                 labels: labels,
-                datasets: [
-                    {
-                        label: "Connexions les 7 derniers jours",
-                        data: connections,
-                        borderColor: "rgba(75, 192, 192, 1)", // Ligne principale
-                        backgroundColor: "rgba(75, 192, 192, 0.2)", // Zone sous la ligne
-                        borderWidth: 2,
-                        fill: true, // Remplit sous la courbe
-                        tension: 0.3, // Ajoute de la courbure à la ligne
-                        pointRadius: 4, // Taille des points
-                        pointHoverRadius: 6, // Taille des points au survol
-                    },
-                ],
+                datasets: [{
+                    label: "Catégories créées les 7 derniers jours",
+                    data: categoriesCount,
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                }],
             },
             options: {
                 responsive: true,
@@ -65,7 +56,7 @@ class JourConnexion {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: "Nombre de connexions",
+                            text: "Nombre de catégories",
                         },
                     },
                     x: {
@@ -75,7 +66,7 @@ class JourConnexion {
                         },
                         ticks: {
                             autoSkip: true,
-                            maxTicksLimit: 10, // Limite le nombre de labels affichés sur l'axe X
+                            maxTicksLimit: 10,
                         },
                     },
                 },
@@ -83,9 +74,8 @@ class JourConnexion {
         });
     }
 
-    // Récupère les données et affiche le graphique
     async fetchAndRenderGraph() {
-        const data = await this.fetchConnectionsData();
+        const data = await this.fetchCategoryData();
 
         if (!data) {
             console.error("Impossible de charger les données pour le graphique.");
@@ -98,5 +88,5 @@ class JourConnexion {
 
 // Initialisation du composant lorsque la page est chargée
 document.addEventListener("DOMContentLoaded", () => {
-    new JourConnexion("connexion-graph", "https://s3-4664.nuage-peda.fr/shareEquipe/api/connections-data");
+    new CategoryStats("categorie-graph", "https://s3-4664.nuage-peda.fr/shareEquipe/api/category-statistics");
 });
