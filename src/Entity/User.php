@@ -98,6 +98,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Connexion::class, orphanRemoval: true)]
     private Collection $connexions;
 
+    /**
+     * @var Collection<int, CategoriePerso>
+     */
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: CategoriePerso::class)]
+    private Collection $categoriePersos;
+
     public function __construct()
     {
         $this->fichiers = new ArrayCollection();
@@ -107,6 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userAccepte = new ArrayCollection();
         $this->fichiersPartages = new ArrayCollection();
         $this->connexions = new ArrayCollection();
+        $this->categoriePersos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -380,6 +387,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($connexion->getUser() === $this) {
                 $connexion->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CategoriePerso>
+     */
+    public function getCategoriePersos(): Collection
+    {
+        return $this->categoriePersos;
+    }
+
+    public function addCategoriePerso(CategoriePerso $categoriePerso): static
+    {
+        if (!$this->categoriePersos->contains($categoriePerso)) {
+            $this->categoriePersos->add($categoriePerso);
+            $categoriePerso->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategoriePerso(CategoriePerso $categoriePerso): static
+    {
+        if ($this->categoriePersos->removeElement($categoriePerso)) {
+            // set the owning side to null (unless already changed)
+            if ($categoriePerso->getUtilisateur() === $this) {
+                $categoriePerso->setUtilisateur(null);
             }
         }
 

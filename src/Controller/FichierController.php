@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Fichier;
 use App\Form\FichierForm;
 use App\Repository\ScategorieRepository;
+use App\Repository\CategoriePersoRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,16 +30,23 @@ class FichierController extends AbstractController
     public function ajoutFichier(
         Request $request,
         ScategorieRepository $scategorieRepository,
+        CategoriePersoRepository $categoriePersoRepo,
         EntityManagerInterface $em,
         SluggerInterface $slugger
     ): Response {
         $fichier = new Fichier();
         $scategories = $scategorieRepository->findBy([], ['categorie' => 'asc', 'numero' => 'asc']);
+        $categoriesp = $categoriePersoRepo->findBy([], ['categoriep' => 'asc']);
 
         $form = $this->createForm(FichierForm::class, $fichier, ['scategories' => $scategories]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $selectedCategoriesP = $form->get('categoriep')->getData();
+            foreach ($selectedCategoriesP as $categoriesp) {
+                $fichier->addScategory($categoriesp);
+            }
+
             $selectedScategories = $form->get('scategories')->getData();
             foreach ($selectedScategories as $scategorie) {
                 $fichier->addScategory($scategorie);

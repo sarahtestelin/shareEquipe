@@ -117,14 +117,25 @@
 						<li class="nav-item">
 							<a class="nav-link" href="{{ path('app_mentions_legales') }}">Mentions légales</a>
 						</li>
+						{% if app.user and is_granted('ROLE_USER') %}
 						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Catégories</a>
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Catégories personnalisées</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="{{ path('app_ajout_categorie_perso') }}">Ajout de catégorie</a>
+								<a class="dropdown-item" href="{{ path('app_liste_categories_perso') }}">Liste des catégories</a>
+							</div>
+						</li>
+						{% endif %}
+						{% if app.user and is_granted('ROLE_ADMIN') %}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Catégories serveur</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="{{ path('app_ajout_categorie') }}">Ajout de catégorie</a>
 								<a class="dropdown-item" href="{{ path('app_liste_categories') }}">Liste des catégories</a>
 								<a class="dropdown-item" href="{{ path('app_ajout_scategorie') }}">Ajout de sous-catégorie</a>
 							</div>
 						</li>
+						{% endif %}
 						{% if app.user and is_granted('ROLE_MOD') %}
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>

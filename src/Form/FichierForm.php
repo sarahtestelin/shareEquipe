@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use App\Entity\CategoriePerso;
 use App\Entity\Fichier;
 use App\Entity\Scategorie;
 use App\Entity\User;
@@ -45,6 +46,15 @@ class FichierForm extends AbstractType
                         ->addOrderBy('u.prenom', 'ASC');
                 },
             ])
+            ->add('categoriesp', EntityType::class, [
+                'class' => CategoriePerso::class,
+                'choices' => $options['categoriesp'],
+                'choice_label' => 'libelle',
+                'expanded' => true,
+                'multiple' => true,
+                'label' => false,
+                'mapped' => false,
+            ])
             ->add('scategories', EntityType::class, [
                 'class' => Scategorie::class,
                 'choices' => $options['scategories'],
@@ -65,6 +75,7 @@ class FichierForm extends AbstractType
         $resolver->setDefaults([
             'data_class' => Fichier::class,
             'scategories' => [],
+            'categoriesp' => [],
         ]);
     }
 }
